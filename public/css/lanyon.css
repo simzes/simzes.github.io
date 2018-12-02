@@ -35,7 +35,6 @@
  */
 
 /* Prevent scroll on narrow devices */
-@import url('https://fonts.googleapis.com/css?family=Cardo|IBM+Plex+Mono');
 html,
 body {
   overflow-x: hidden;
