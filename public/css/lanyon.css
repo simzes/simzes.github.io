@@ -35,26 +35,17 @@
  */
 
 /* Prevent scroll on narrow devices */
-@import url('https://fonts.googleapis.com/css?family=Open+Sans');
-@import url('https://fonts.googleapis.com/css?family=Cardo');
 html,
 body {
   overflow-x: hidden;
 }
 
 html {
-  font-family: Georgia, "PT Serif", "Times New Roman", serif;
+  font-family: "PT Serif", Georgia, "Times New Roman", serif;
 }
-/*
-h1, h2 {
-  font-family: "Cardo";
-  font-weight: 400;
-  color: #313131;
-  letter-spacing: -.025rem;
-}
-*/
+
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Open Sans", sans-serif;
+  font-family: "PT Sans", sans-serif;
   font-weight: 400;
   color: #313131;
   letter-spacing: -.025rem;
@@ -121,6 +112,9 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 400;
   color: #c0c0c0;
   letter-spacing: 0;
+}
+.masthead-title small-fw {
+    font-family: "IBM Plex Mono", monospace;
 }
 
 @media (max-width: 48rem) {

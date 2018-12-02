@@ -7,7 +7,7 @@ permalink:        /:title
 
 # Setup
 title:            simon's bench
-tagline:          'A [digital] notebook on craftsmanship'
+tagline:          'A <small-fw>[digital]</small-fw> notebook on craftsmanship'
 description:      ''
 url:              https://simonsbench.net
 
