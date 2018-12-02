@@ -11,3 +11,6 @@ simon's github page can be found here:
 
 ### license
 {% include content_license.md %}
+
+### powered by
+This site is hosted by [github pages](https://pages.github.com/), and built on [jekyll](https://jekyllrb.com/) and the [lanyon theme](https://github.com/poole/lanyon).
