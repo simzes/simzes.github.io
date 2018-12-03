@@ -146,7 +146,7 @@ Cycle and Done Signals:
 | DONE     | done signal, but latched with CLK                                                                                                             |
 | CYC_R    | defined above; used as the cycle counter’s increment clock                                                                                    |
 
-**Parts List**
+### Parts List
 A parts list for most of the components in the circuit can be found below:
 
 | **Parts**                   | Count |
