@@ -55,6 +55,19 @@ frameborder="0" allowfullscreen class="video"></iframe>
 
 ---
 ## Resources and Documentation
+### Early Version Full Notes
+Complete notes on an earlier version can be found [here](https://github.com/simzes/clapping-music-circuit/blob/master/docs/prototype_notes.pdf). This version was not implemented in full, and contains a number of excess states and circuit variables. As an example, the “load” state was removed after it was realized that the reset → normal transition could be seamless and stateless if the parts’ tap bits were moved to the serial input/high bit.
+
+## Servo Prototype
+A prototype was first developed with an arduino, driving servo motors. A video of this prototype, striking drinking cups with taped-on pencils, is below:
+
+<div class="youtube-container">
+<iframe src="https://www.youtube.com/embed/_mvR-xaQNZ4?rel=0"
+frameborder="0" allowfullscreen class="video"></iframe>
+</div>
+
+The arduino code for this is
+[here](https://raw.githubusercontent.com/simzes/clapping-music-circuit/master/clapping_music_servo/clapping_music_servo.ino).
 
 ### Kicad Schematic
 A kicad schematic for this project, hosted in github, can be found here:
@@ -132,21 +145,6 @@ Cycle and Done Signals:
 | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | DONE     | done signal, but latched with CLK                                                                                                             |
 | CYC_R    | defined above; used as the cycle counter’s increment clock                                                                                    |
-
-### Early Version Full Notes
-Complete notes on an earlier version can be found [here](https://github.com/simzes/clapping-music-circuit/blob/master/docs/prototype_notes.pdf). This version was not implemented in full, and contains a number of excess states and circuit variables. As an example, the “load” state was removed after it was realized that the reset → normal transition could be seamless and stateless if the parts’ tap bits were moved to the serial input/high bit.
-
-## Servo Prototype
-A prototype was first developed with an arduino, driving servo motors. A video of this prototype, striking drinking cups with taped-on pencils, is below:
-
-<div class="youtube-container">
-<iframe src="https://www.youtube.com/embed/_mvR-xaQNZ4?rel=0" 
-frameborder="0" allowfullscreen class="video"></iframe>
-</div>
-
-The arduino code for this is
-[here](https://raw.githubusercontent.com/simzes/clapping-music-circuit/master/clapping_music_servo/clapping_music_servo.ino).
-
 
 **Parts List**
 A parts list for most of the components in the circuit can be found below:
