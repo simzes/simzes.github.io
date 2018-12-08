@@ -366,6 +366,7 @@ a.sidebar-nav-item:focus {
 }
 
 .post-title {
+    margin-bottom: 1rem;
     border-bottom: 1.5px solid;
 }
 

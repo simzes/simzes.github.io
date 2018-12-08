@@ -14,3 +14,6 @@ simon's github page can be found here:
 
 ### powered by
 This site is hosted by [github pages](https://pages.github.com/), and built on [jekyll](https://jekyllrb.com/) and the [lanyon theme](https://github.com/poole/lanyon).
+
+---
+This site is best viewed on a full-size screen.
