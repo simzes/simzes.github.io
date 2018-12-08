@@ -1,0 +1,7 @@
+&copy
+{% if page.date %}
+{{ page.date | date: "%Y" }}
+{% else %}
+{{ site.time | date: "%Y" }}
+{% endif %}
+simon's bench | <a href="/license">CC BY-NC 4.0</a>
