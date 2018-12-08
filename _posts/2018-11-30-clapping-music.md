@@ -1,6 +1,7 @@
 ---
 layout: post
 author: simon
+caption: A musical sculpture and digital logic circuit.
 ---
 ## Summary
 
