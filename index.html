@@ -10,7 +10,13 @@ layout: default
 	{{ post.title }}
       </a>
     </h1>
-    {{ post.subtitle }}
+    {% if post.caption %}
+    <div class="post-listing-container">
+      <p>
+	{{ post.caption }}
+      </p>
+    </div>
+    {% endif %}
   </div class="container">
 </div>
 {% endfor %}
