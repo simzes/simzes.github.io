@@ -77,12 +77,16 @@ A kicad schematic for this project, hosted in github, can be found here:
 Note that the 74xx-eu.lib library, as accessed during the project, contained an error for the JK flip-flop pinout declaration. A fixed version has been included.
 
 ### Layouts
-A PDF and PNG schematic can be found
+The whole circuit layout:
+![here](https://raw.githubusercontent.com/simzes/clapping-music-circuit/master/printouts/clapping-music.png)
+
+A floorplan of a constructed circuit:
+![here](https://raw.githubusercontent.com/simzes/clapping-music-circuit/master/printouts/floorplan-annot.png)
+
+The PDF and PNG schematics can be found
 [here](https://github.com/simzes/clapping-music-circuit/blob/master/printouts/clapping-music.pdf)
 and
 [here](https://raw.githubusercontent.com/simzes/clapping-music-circuit/master/printouts/clapping-music.png).
-A floorplan of a constructed circuit can be found
-[here](https://raw.githubusercontent.com/simzes/clapping-music-circuit/master/printouts/floorplan-annot.png).
 
 ---
 ## Full Notes
