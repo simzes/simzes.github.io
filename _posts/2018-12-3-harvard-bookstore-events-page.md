@@ -148,6 +148,18 @@ State is held by url, and stored in memcached. Requests for a resource with no c
 A backoff/contest algorithm handles races for the same resource from multiple threads. On a per-url basis, multiple requests are linearized with atomic cache updates, so that each thread attempting to update the cache with a request to origin are assigned a token unique to both the existing cache entry and the thread's request to renew the resource. In a contest to update a cache entry, only one thread "wins," and can make an origin request immediately. All threads that lose wait additional time, if necessary, before making an origin request, where this additional time is governed by the count of other, known threads participating in the contest.
 
 ---
+A few things remain to be done:
+ * add tests to ensure continued correctness, and to exercise consistency logic
+ * run some performance tests, to gauge the cache's overhead against the content size and the server response time, when:
+    - a request can be served from the cache
+    - there is no entry in the cache
+    - there is an entry, but it is invalid
+    - a contending thread loses the update contest
+ * switch to a more feature-rich way of coordinating between threads; losing threads poll memcached at some period, building in unnecessary delay
+ * fix some minor exceptions and logging issues
+ * add ability to configure on a per-url basis
+
+---
 ## Footnotes
 
 <a name="myfootnote1">1</a>: mod_wsgi python script for setting headers and time: <https://github.com/simzes/legacy-webcache/blob/main/basic_headers_rewrite/mock_headers.wsgi>
