@@ -20,8 +20,6 @@ Use is straightforward enough—a calculation for cutting or drilling aluminum, 
 
 ![](public/images/mill-speed-formula/al-example-formula.svg)
 
-(1200 is a better speed for a carbide end mill.)
-
 ---
 The mechanism of the formula is a geometric transformation of the cutting speed for use with a radial tool: the cutting speed is a property of the material being cut, expressed in feet per minute, and gives the speed that a (reasonably loaded) tool edge should move against the material. The formula yields the spindle speed, in rotations per minute, that will preserve this condition.
 
