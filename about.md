@@ -3,7 +3,7 @@ layout: page
 title: About
 ---
 ### simon
-simon is a dude.
+simon is a programmer, and an electronics/fabrication enthusiast.
 
 ### github
 simon's github page can be found here:  
