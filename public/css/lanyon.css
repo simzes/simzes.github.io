@@ -327,9 +327,10 @@ a.sidebar-nav-item:focus {
 
 /* Blog post or page title */
 .page-title,
-.post-title a,
+.post-title-block a,
 .post-link a,
-.post-title {
+.post-title,
+.post-title-block {
   color: #303030;
   font-family: "Cardo";
   padding-bottom: .3rem;
@@ -342,6 +343,7 @@ a.sidebar-nav-item:focus {
     border-bottom: 1.5px solid;
     color: #eee;
 }
+
 .post-listing h1 {
     margin-top: 0;
     margin-bottom: 0;
@@ -365,7 +367,7 @@ a.sidebar-nav-item:focus {
   margin-top: 0;
 }
 
-.post-title {
+.post-title-block {
     margin-bottom: 1rem;
     border-bottom: 1.5px solid;
 }
