@@ -158,6 +158,18 @@ Overall, this measurement approach turned out to have many benefits:
 
 <br/><br/>
 
+![](public/images/light-shapes-and-lens-spacings/fresnel_focusing.gif)
+
+*A spot test for checking collimation.*
+
+<br/><br/>
+
+![](public/images/light-shapes-and-lens-spacings/thor_unfocusing.gif)
+
+*An out-of-focus lens changes the spot size and quality rapidly.*
+
+<br/><br/>
+
 ![](public/images/light-shapes-and-lens-spacings/fresnel_spot_test_wall.jpg) *Some lenses, like this fresnel lens, could keep their shape over 6 feet or so. Meausuring the spot distance from further away made lens adjustments more accurate.*
 
 <br/><br/>
