@@ -398,7 +398,7 @@ Threaded headset:
 - Installing/removing/adjusting a quill stem: <https://www.parktool.com/en-us/blog/repair-help/stem-removal-installation-quill-stems>
 - Servicing/repacking a threaded headset: <https://www.parktool.com/en-us/blog/repair-help/threaded-headset-service>
 
-Threadless 
+Threadless
 
 - Adjusting handlebar height on a threadless headset: <https://www.bikeradar.com/advice/workshop/how-to-adjust-your-handlebar-height>
 - Installing/removing a threadless stem: <https://www.parktool.com/en-us/blog/repair-help/stem-removal-installation-threadless>
