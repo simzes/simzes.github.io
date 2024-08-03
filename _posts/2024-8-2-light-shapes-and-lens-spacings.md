@@ -154,11 +154,11 @@ Overall, this measurement approach turned out to have many benefits:
 
 ## Photo Shoot!
 
-![](public/images/light-shapes-and-lens-spacings/fresnel_spot_test.jpg) *This fresnel lens was naively chosen with a focal length much too long for an LED (50mm, for a 50mm diameter lens); this allows much of the light to escape from the side, about 1/3 of the light measured with a 32mm focal length fresnel of the same diameter. Between this and the UV-absorbency of acrylic, 40% of the LED's light makes it into the spot.*
+![](public/images/light-shapes-and-lens-spacings/fresnel_spot_test.jpg) *This fresnel lens had an excellent spot-test and collimated well, but was naively chosen with a focal length much too long for an LED (50mm, for a 50mm diameter lens); this allows much of the light to escape from the side, about 1/3 of the light measured with a 32mm focal length fresnel of the same diameter. Between this and the UV-absorbency of acrylic, 40% of the LED's light makes it into the spot.*
 
 <br/><br/>
 
-![](public/images/light-shapes-and-lens-spacings/fresnel_spot_test_wall.jpg) *Some lenses could keep their shape over 6 feet or so. Meausuring the spot distance from further away made lens adjustments more accurate.*
+![](public/images/light-shapes-and-lens-spacings/fresnel_spot_test_wall.jpg) *Some lenses, like this fresnel lens, could keep their shape over 6 feet or so. Meausuring the spot distance from further away made lens adjustments more accurate.*
 
 <br/><br/>
 
@@ -194,7 +194,7 @@ Overall, this measurement approach turned out to have many benefits:
 
 <br/><br/>
 
-![](public/images/light-shapes-and-lens-spacings/adafruit_harmonics.png) *Many lenses can be spaced at half the located spacing, creating a tighter overall plot; as long as the variations don't line up, the variation is halved with each doubling. If someone wanted to double the exposure power, they could add a second array. This is like harmonics.*
+![](public/images/light-shapes-and-lens-spacings/adafruit_harmonics.png) *Many lenses can be spaced at half the located spacing, creating a tighter overall plot; as long as the variations don't line up, the variation is halved with each doubling. If someone wanted to double the exposure power, they could add a second array.*
 
 <br/><br/>
 
