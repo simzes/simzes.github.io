@@ -5,6 +5,7 @@ author: simon
 title: Bike System Troubleshooting Notes
 caption: Common bike issues, with causes, things to check for, explanations, and fixes.
 ---
+# Synopsis
 ## Wheel
 ### My tire went flat, or keeps going flat after patching or replacing! (For wheels with inner tubes.)
 
