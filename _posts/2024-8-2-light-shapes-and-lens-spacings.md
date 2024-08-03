@@ -150,11 +150,9 @@ Overall, this measurement approach turned out to have many benefits:
 - once an exposure scanning speed has been successfully established for one lens, calculating scanning speeds for the remaining lenses is straightforward: the intensity measurements have relative meaning across different lenses. This also reduces the cost of evaluating a lens, because only one lens is needed to take measurements, while several are needed for an exposure test
 - the cumulative intensity of a lens spot is easy to calculate, helping evaluate lens materials and value. Some lens materials and coatings transmit UV light differently: acrylic fresnel lenses achieve excellent collimation at low cost, but acrylic blocks a significant percentage of UV light (about 60% gets through the Thor 2" fresnel lens). Other lenses are available with a specialized coating for increased UV transmission, but at higher cost. While the acrylic lenses need an evalution of collimation quality and a mask to work well, the UV coating from Thor Labs only bumped transmission by a few percentage points.
 
-<br/><br/>
-
 ## Photo Shoot!
 
-![](public/images/light-shapes-and-lens-spacings/fresnel_spot_test.jpg) *This fresnel lens had an excellent spot-test and collimated well, but was naively chosen with a focal length much too long for an LED (50mm, for a 50mm diameter lens); this allows much of the light to escape from the side, about 1/3 of the light measured with a 32mm focal length fresnel of the same diameter. Between this and the UV-absorbency of acrylic, 40% of the LED's light makes it into the spot.*
+![](public/images/light-shapes-and-lens-spacings/fresnel_spot_test.jpg) *This fresnel lens had an excellent spot-test and collimated well, but was naively chosen with a focal length much too long for an LED (50mm, for a 50mm diameter lens); this allows much of the light to escape from the side -- about 1/3 of the light measured with a 32mm focal length fresnel of the same diameter. Between this and the UV-absorbency of acrylic, 40% of the LED's light makes it into the spot.*
 
 <br/><br/>
 
@@ -202,7 +200,7 @@ Overall, this measurement approach turned out to have many benefits:
 
 <br/><br/>
 
-![](public/images/light-shapes-and-lens-spacings/thor_misfocus.png) *In an earlier test of the Thor lens, the LED die appears visible as a square imprint on the top of the plateau. This was an early test where the lens was out of focus.*
+![](public/images/light-shapes-and-lens-spacings/thor_misfocus.png) *In an earlier test of the Thor lens, the LED die appears visible as a square imprint on the top of the plateau. This is one where the lens was out of focus.*
 
 <br/><br/>
 
@@ -222,7 +220,7 @@ Overall, this measurement approach turned out to have many benefits:
 
 <br/><br/>
 
-![](public/images/light-shapes-and-lens-spacings/tiny_led.JPEG) *In early tests, I used single LED chips and explored integral lenses. They are very small. (Integral lenses do not work very well, compared to full-size lenses.)*
+![](public/images/light-shapes-and-lens-spacings/tiny_led.JPEG) *In early tests, I used lone (discrete) LED chips and explored on-board lenses. They are very small, and hard to work with. (On-board lenses do not work very well, compared to external, full-size lenses.)*
 
 <br/><br/>
 
@@ -231,9 +229,6 @@ Overall, this measurement approach turned out to have many benefits:
 <br/><br/>
 
 ![](public/images/light-shapes-and-lens-spacings/leds_on_boom.jpg) *The LEDs during their first test on the boom during set-up. The fan was not needed, but was ready just in case.*
-
-<br/><br/>
-
 
 ## Some Sensor Scratch Work to Validate the Measurement Set-up
 
@@ -253,7 +248,7 @@ The remaining details are:
 - the measurement routine uses an integration multiplier of 4T, for increased sensitivity at lower ranges, making the intensity reading 4 times higher
 - the adafruit board uses a 270k resistor for integration, rather than the 240k resistor specified with the datasheet’s 5uW conversion figure. This increases the sensitivity at lower ranges, making the reading 270/240 times higher. (I think this is a gain multiplier; the datasheet does not explain how the rset impacts this reading, other than to explain that it slows readings down.)
 
-All together, this comes together to:
+All together, this comes to:
 
 ![](public/images/light-shapes-and-lens-spacings/radiometric_equation.svg)
 
@@ -317,7 +312,7 @@ There are UV LED chips capable of generating just as much light, but from a smal
 The Carclo 10108 and 10391 lenses are excellent options, being both the most affordable lens and having low variation. But! Polycarbonate is known to degrade in UV light. Screen printing emulsion can work with 395, 405, and 415nm-centered LEDs; these lights may be high enough in the UV and low-visible spectrum to be compatible with polycarbonate.
 
 ### Find a UV sensor with a better response curve for 400-415nm
-The UV sensor performed very well in this experiment, despite facing a disadvantageous spectral response curve at 400-415nm. A significantly better sensor may be available, and better match the LEDs being tested. The AS7331, integrated onto a demo board by Sparkfun, has a higher response rate of 20-30% to these wavelengths, has a higher base sensitivity (in nW), comes with a variety of measurement modes, and has a much wider gain adjustment.
+The UV sensor performed very well in this experiment for its cost ($5 from Adafruit), despite facing a disadvantageous spectral response curve at 400-415nm. But a significantly better sensor may be available, and better match the LEDs being tested. The AS7331, integrated onto a demo board by Sparkfun, has a higher response rate of 20-30% to these wavelengths, has a higher base sensitivity (in nW), comes with a variety of measurement modes, and has a much wider gain adjustment.
 
 ### Automated spacings solver
 While feeding spacings into the program by hand is doable, it does add some time for hand-analysis, particularly if the spacing and reasons why it was chosen are forgotten. Doing this solving automatically, generating graphs, and tabulating the results would make this process easier. Interpolation may also allow solving down to .1mm resolution, allowing for more precision.
