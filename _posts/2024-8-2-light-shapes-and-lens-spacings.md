@@ -5,7 +5,7 @@ author: simon
 title: Experiments with Light Shapes and Lens Spacings
 caption: Finding ideal lens spacings for a scanning photo-exposure design, with measurement and simulation.
 ---
-The next step in prototyping a scanning photo-exposure unit for screen printing is experimenting with different lenses, and finding the right spacing for each one. This sub-project explores using a low-cost UV sensor to measure the light shape created by different lens types. The sensor scans across a light spot over two axes, producing thousands of measurements that form a three dimensional light shape. This data is then used to simulate different spacings to find the spacing that minimizes light variation across the scanning strip.
+The next step in prototyping a scanning photo-exposure unit for screen printing, is experimenting with different lenses and finding the right spacing for each one. This sub-project explores using a low-cost UV sensor to measure the light shape created by different lens types. The sensor scans across a light spot over two axes, producing thousands of measurements that form a three dimensional light shape. This data is then used to simulate different spacings to find the spacing that minimizes light variation across the scanning strip.
 
 [Previous sketches and graphing](/flatbed-exposure-sketch) suggested that combined circles could overlap to create a light strip even enough for photo-exposure. This guesswork assumed light spots with even distributions of light. But LEDs don’t produce light shapes with even distributions, and each lens compounds this light shape differently. The question of whether focused lights could form an even strip remained murky, along with other questions of which lenses are suitable and system cost.
 
