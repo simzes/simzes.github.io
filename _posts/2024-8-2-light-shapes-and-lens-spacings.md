@@ -284,6 +284,9 @@ I was able to write an interpolation routine that re-sampled the 26-pulse traces
 
 ![](public/images/light-shapes-and-lens-spacings/stepper_pulses_horns_disappear.png)
 
+The simulation graph of the combined spots is easier to read, and shows the center and combined peaks clearly.
+![](public/images/light-shapes-and-lens-spacings/thor_accum_smoothed_out.png)
+
 For the Thor condenser lens shown, removing this noise didn't change the ideal spacing (16mm) -- but it did lower the variation, which was at 6.17% with the spikes, and without is at 4.42%. (Coincidentally, this step-shortening does continue to validate the sensitivity and error rate of the sensor; each step in the 26-trace was only .0375mm shorter than the 27s.)
 
 **The slumps** in the 3D-views of the light spot always sloshed the light towards the back of the light spot, with later measurements having a steeper descent than the early ones. This asymmetry was always in the boom's movement axis. While a tilt in this axis doesn't change the cumulative intensities of how a collimating lens, it was still troubling. I thought the sensor was being pulled and tilted by the i2c and power wires, which have some residual coil that was able to pull a light sensor board askew. I tried mounted the sensor on brass plate heavy enough to hold it flat. This slump didn't go away. One theory was that the sensor had some inertia after hitting the peak, and took a few seconds to cool down, creating this steep descent. I had looked at the boom axis, and tried to bolt it down parallel with the table. A later, improved method of checking parallel-ness (to the table, not to the extrusion frame) showed that this was the source of the slump.
