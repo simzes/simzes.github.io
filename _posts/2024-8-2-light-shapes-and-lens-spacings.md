@@ -3,9 +3,17 @@ layout: post
 author: simon
 
 title: Experiments with Light Shapes and Lens Spacings
-caption: Finding ideal lens spacings for a scanning photo-exposure design, with measurement and simulation.
+caption: Finding ideal lens spacings for a scanning photo-exposure design for screen printing, with measurement and simulation.
 ---
-The next step in prototyping a scanning photo-exposure unit for screen printing, is experimenting with different lenses and finding the right spacing for each one. This sub-project explores using a low-cost UV sensor to measure the light shape created by different lens types. The sensor scans across a light spot over two axes, producing thousands of measurements that form a three dimensional light shape. This data is then used to simulate different spacings to find the spacing that minimizes light variation across the scanning strip.
+*This is [part of a series](/flatbed-exposure-sketch) exploring the design of a novel scanning photo-exposure technique for screen printing and other media (cyanotypes, platinum and palladium prints, etc). This exposure technique scans a light strip across the screen and stencil, using focusing lenses to achieve the excellent exposure characteristics of a room-sized projection lamp in the compact space of a typical light table.*
+
+*This post examines spacing patterns of lights along the strip, and how changing the distance between lights impacts the cumulative exposure shape and variation in light levels.*
+
+---
+
+The next step in prototyping a scanning photo-exposure unit is experimenting with different lenses and finding the right spacing for each one. Different lens spacings along a strip change how individual light spots add and accumulate into an exposure, as the strip scans across the screen. Ideally, the exposure has minimal variation along the strip.
+
+This sub-project explores using a low-cost UV sensor to measure the light shape created by different lens types. The sensor scans across a light spot over two axes, producing thousands of measurements that form a three dimensional light shape. This data is then used to simulate different spacings to find the spacing that minimizes light variation across the scanning strip.
 
 [Previous sketches and graphing](/flatbed-exposure-sketch) suggested that combined circles could overlap to create a light strip even enough for photo-exposure. This guesswork assumed light spots with even distributions of light. But LEDs don’t produce light shapes with even distributions, and each lens compounds this light shape differently. The question of whether focused lights could form an even strip remained murky, along with other questions of which lenses are suitable and system cost.
 
@@ -14,7 +22,7 @@ This measurement set-up produced high-quality maps of light shapes, and simulati
 ## Background
 In purchasing or building ultraviolet photo-exposure units for screen printing, printers have traditionally picked between these two designs.
 
-**With a projector-style exposure,** one focused light source is positioned some distance from the photo-stencil and screen; while these cast crisp, excellent shadows, they take up so much space! This is often whole rooms for the largest of screens. And the space around the screen is unsafe for humans while the light is on — UV light can cause eye damage, and a powerful, focused one is especially dangerous. In many settings (educational or community print studios), this danger is hard to safely contain, and there aren’t any affordable resources for room-sized lockouts.
+**With a projector-style exposure,** one focused light source is positioned some distance from the photo-stencil and screen; while these cast crisp, excellent shadows, they take up so much space! This is often whole rooms for the largest of screens. The lamps are not easy to manage, as they have long warm-up and cool-down times. And the space around the screen is not ideal for humans while the light is on — UV light can cause eye damage, and a powerful, focused one is especially dangerous. In many settings (educational or community print studios), this danger is hard to safely contain, and there aren’t any affordable resources for room-sized lockouts.
 
 ![](public/images/light-shapes-and-lens-spacings/drawing_1.svg)
 
@@ -234,32 +242,6 @@ Overall, this measurement approach turned out to have many benefits:
 
 ![](public/images/light-shapes-and-lens-spacings/leds_on_boom.jpg) *The LEDs during their first test on the boom during set-up. The fan was not needed, but was ready just in case.*
 
-## Some Sensor Scratch Work to Validate the Measurement Set-up
-
-For many parts of the system, the accuracy of the measurement setup is easy to understand. But the sensor itself is hard to reason about; the datasheet has limited information, and there aren't very many details available elsewhere. With low-cost sensors ($2-3) like these, the intensity values taken by the same sensor usually have some accuracy and repeatability relative to each other. But they aren’t calibrated to anything else, making conversions between intensity values and radiometric output (watts) difficult without additional, expensive equipment. One source states that they are within 10% of a calibrated light meter: [https://mouser.com/new/vishay/vishay-veml-sensors/](https://mouser.com/new/vishay/vishay-veml-sensors/)
-
-The sensor datasheet provides two details about accuracy in this experiment. One clue is the resolution, which is listed as “typically” 5uW/cm^2/s. (What does “typically” mean…) Another clue is in the spectral-response graph of the sensor: the 6070 has an ~8% spectral response rate to 415nm light. (A better choice for future experiments would be a sensor whose peak spectral response closely matches the LED being tested; an 8% spectral response cuts the sensor’s resolution by 12.5 for this experiment.)
-
-One detail listed in the LED’s datasheet provides a bridge between these intensity readings and radiometric output. Experiments from this project powered the LED at 500mA — and so did a test done by the LED's manufacturer. This test lists the output of the 415nm-centered LED between 700 and 850mW, depending on the LED’s brightness bin: [https://www.ledsupply.com/content/pdf/leds-semiled-uv_documentation.pdf](https://www.ledsupply.com/content/pdf/leds-semiled-uv_documentation.pdf).
-
-With these three figures, the measurement error is straightforward to calculate. The largest fresnel lens tested has a diameter of 50mm. When 775mW is output over a circle of about 20 square centimeters, the average light level is about 40mW/cm^2. Suppose half the light is lost in the acrylic and the edges of the circle get half of this, making the low-end measurement 10mW/cm^2. Adapted to an 8% spectral response rate, the sensor resolution of 5uW / cm^2 / step is 12.5 worse, at 60uW / cm^2 / step. Out of 10mW/cm^2, this resolution has an error band about 0.6% wide. When more sensitive integration settings are used, this rate is quartered. (The 5uW number is for a 1T integration period; a 4T integration period has a 4x gain.) The error rate can be lowered for an experiment like this: this band applies to a single measurement, showing how far away the physical condition being sampled can be from the intensity value output by the sensor; when an experiment takes many thousands of measurements across a light shape that ranges widely in intensity, the measurements will be evenly distributed across this small error band. The expected error is an average of this even distribution — half the error of a single measurement. All together across the experiment, the error band could be under 0.1%. (There are some remaining issues with measurement error exceeding 0.1% in this experiment; there are some possible sources aside from the sensor's accuracy, discussed in the hiccups and future work sections.)
-
-The integration of these measurements can also show how calibrated the sensor is to the light’s expected radiometric output (and loosely validate the error rate). While this measurement setup is meant for producing and analyzing distributions, the integration of these measurements can be compared to the light’s expected radiometric output, using the 5uW / cm^2 / step as a conversion rate. At an 8% spectral response rate, an LED output of 775mW should produce an integrated reading of 62mW. (The low and high output ranges of 700 and 850mW set a range of 56mW to 68mW.)
-
-The remaining details are:
-
-- the average reading for the no-lens experiment is an intensity of 166.75, over an 18x18 cm square
-- the measurement routine uses an integration multiplier of 4T, for increased sensitivity at lower ranges, making the intensity reading 4 times higher
-- the adafruit board uses a 270k resistor for integration, rather than the 240k resistor specified with the datasheet’s 5uW conversion figure. This increases the sensitivity at lower ranges, making the reading 270/240 times higher. (I think this is a gain multiplier; the datasheet does not explain how the rset impacts this reading, other than to explain that it slows readings down.)
-
-All together, this comes to:
-
-![](public/images/light-shapes-and-lens-spacings/radiometric_equation.svg)
-
-Hurrah! In addition to the sensor having an excellent error rate, the sensor and measurement setup is able to closely reproduce the LED’s expected output. Without calibration, it’s not possible to say whether the difference is significant, or where it might come from.
-
-(There is some iffy-ness to this calculation; while the light is centered at 415nm, some light will be present at lower wavelengths, where the sensor has increasing sensitivity. But some light leaves the LED at a 120-degree viewing angle, and escapes the experiment’s measurement square of 180mm. Some lenses that fully surround the LED produced cumulative readings about 10 or 20% higher than the LED without a lens. A better integration of the no-lens would take a reading closer to the LED and prevent light escape.)
-
 ## Hiccups
 
 This project was not a straight line, and many obstacles arose during the building of the measurement set-up and writing the controls and analysis software. A few still remain.
@@ -306,6 +288,15 @@ These simulation results are based on measurements taken by a high-quality UV se
 
 Similarly, conversions that take scanning speeds from successful exposures and predict scanning speeds for measured lenses should be validated in an experiment.
 
+### Investigate Reciprocity Failure
+Photographic emulsion does not always have a linear exposure response to light intensity.
+
+When photographic media reaches an exposure level E at some intensity * time, ideal reciprocity means that the same exposure level E can be achieved at half this intensity and twice the time. Or one-third the intensity and three times the time.
+
+Reciprocity failure means that this property is not true! Photographic media has a response that is linear for much of its exposure profile, but elonges for low-intensity exposures; these low-intensity exposures need more time than expected to reach an exposure level. There is a commonly used calculation for adjusting exposure times under a certain intensity threshold.
+
+In the context of emulsion and the scanning strip, some areas of the light spot may count differently towards an exposure than the UV sensor detects. The reciprocity failure correction calculation needs to be derived experimentally, and applied to the light shape to correct this.
+
 ### Test more lenses
 There are several lenses that may be suitable, but haven't been tested yet. Issues around the LED projecting with condenser lenses emerged late in the project, and diffused-surface lenses are a recent discovery.
 
@@ -343,3 +334,30 @@ The UV sensor performed very well in this experiment for its cost ($5 from Adafr
 
 ### Automated spacings solver
 While feeding spacings into the program by hand is doable, it does add some time for hand-analysis, particularly if the spacing and reasons why it was chosen are forgotten. Doing this solving automatically, generating graphs, and tabulating the results would make this process easier. Interpolation may also allow solving down to .1mm resolution, allowing for more precision.
+
+# Appendix of Resources
+## Some Sensor Scratch Work to Validate the Measurement Set-up
+
+For many parts of the system, the accuracy of the measurement setup is easy to understand. But the sensor itself is hard to reason about; the datasheet has limited information, and there aren't very many details available elsewhere. With low-cost sensors ($2-3) like these, the intensity values taken by the same sensor usually have some accuracy and repeatability relative to each other. But they aren’t calibrated to anything else, making conversions between intensity values and radiometric output (watts) difficult without additional, expensive equipment. One source states that they are within 10% of a calibrated light meter: [https://mouser.com/new/vishay/vishay-veml-sensors/](https://mouser.com/new/vishay/vishay-veml-sensors/)
+
+The sensor datasheet provides two details about accuracy in this experiment. One clue is the resolution, which is listed as “typically” 5uW/cm^2/s. (What does “typically” mean…) Another clue is in the spectral-response graph of the sensor: the 6070 has an ~8% spectral response rate to 415nm light. (A better choice for future experiments would be a sensor whose peak spectral response closely matches the LED being tested; an 8% spectral response cuts the sensor’s resolution by 12.5 for this experiment.)
+
+One detail listed in the LED’s datasheet provides a bridge between these intensity readings and radiometric output. Experiments from this project powered the LED at 500mA — and so did a test done by the LED's manufacturer. This test lists the output of the 415nm-centered LED between 700 and 850mW, depending on the LED’s brightness bin: [https://www.ledsupply.com/content/pdf/leds-semiled-uv_documentation.pdf](https://www.ledsupply.com/content/pdf/leds-semiled-uv_documentation.pdf).
+
+With these three figures, the measurement error is straightforward to calculate. The largest fresnel lens tested has a diameter of 50mm. When 775mW is output over a circle of about 20 square centimeters, the average light level is about 40mW/cm^2. Suppose half the light is lost in the acrylic and the edges of the circle get half of this, making the low-end measurement 10mW/cm^2. Adapted to an 8% spectral response rate, the sensor resolution of 5uW / cm^2 / step is 12.5 worse, at 60uW / cm^2 / step. Out of 10mW/cm^2, this resolution has an error band about 0.6% wide. When more sensitive integration settings are used, this rate is quartered. (The 5uW number is for a 1T integration period; a 4T integration period has a 4x gain.) The error rate can be lowered for an experiment like this: this band applies to a single measurement, showing how far away the physical condition being sampled can be from the intensity value output by the sensor; when an experiment takes many thousands of measurements across a light shape that ranges widely in intensity, the measurements will be evenly distributed across this small error band. The expected error is an average of this even distribution — half the error of a single measurement. All together across the experiment, the error band could be under 0.1%. (There are some remaining issues with measurement error exceeding 0.1% in this experiment; there are some possible sources aside from the sensor's accuracy, discussed in the hiccups and future work sections.)
+
+The integration of these measurements can also show how calibrated the sensor is to the light’s expected radiometric output (and loosely validate the error rate). While this measurement setup is meant for producing and analyzing distributions, the integration of these measurements can be compared to the light’s expected radiometric output, using the 5uW / cm^2 / step as a conversion rate. At an 8% spectral response rate, an LED output of 775mW should produce an integrated reading of 62mW. (The low and high output ranges of 700 and 850mW set a range of 56mW to 68mW.)
+
+The remaining details are:
+
+- the average reading for the no-lens experiment is an intensity of 166.75, over an 18x18 cm square
+- the measurement routine uses an integration multiplier of 4T, for increased sensitivity at lower ranges, making the intensity reading 4 times higher
+- the adafruit board uses a 270k resistor for integration, rather than the 240k resistor specified with the datasheet’s 5uW conversion figure. This increases the sensitivity at lower ranges, making the reading 270/240 times higher. (I think this is a gain multiplier; the datasheet does not explain how the rset impacts this reading, other than to explain that it slows readings down.)
+
+All together, this comes to:
+
+![](public/images/light-shapes-and-lens-spacings/radiometric_equation.svg)
+
+Hurrah! In addition to the sensor having an excellent error rate, the sensor and measurement setup is able to closely reproduce the LED’s expected output. Without calibration, it’s not possible to say whether the difference is significant, or where it might come from.
+
+(There is some iffy-ness to this calculation; while the light is centered at 415nm, some light will be present at lower wavelengths, where the sensor has increasing sensitivity. But some light leaves the LED at a 120-degree viewing angle, and escapes the experiment’s measurement square of 180mm. Some lenses that fully surround the LED produced cumulative readings about 10 or 20% higher than the LED without a lens. A better integration of the no-lens would take a reading closer to the LED and prevent light escape.)
