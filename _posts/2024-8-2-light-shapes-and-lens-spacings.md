@@ -5,7 +5,7 @@ author: simon
 title: Experiments with Light Shapes and Lens Spacings
 caption: Finding ideal lens spacings for a scanning photo-exposure design for screen printing, with measurement and simulation.
 ---
-*This is [part of a series](/flatbed-exposure-sketch) exploring the design of a novel scanning photo-exposure technique for screen printing and other media (cyanotypes, platinum and palladium prints, etc). This exposure technique scans a light strip across the screen and stencil, using focusing lenses to achieve the excellent exposure characteristics of a room-sized projection lamp in the compact space of a typical light table.*
+*This is [part of a series](/flatbed-exposure-sketch) exploring the design of a novel scanning photo-exposure technique for screen printing and other light-sensitive media (cyanotypes, platinum and palladium prints, photo-chemical etching, etc). This exposure technique scans a light strip across the screen and stencil, using focusing lenses to achieve the excellent exposure characteristics of a room-sized projection lamp in the compact space of a typical light table.*
 
 *This post examines spacing patterns of lights along the strip, and how changing the distance between lights impacts the cumulative exposure shape and variation in light levels.*
 
@@ -213,10 +213,6 @@ Overall, this measurement approach turned out to have many benefits:
 <br/><br/>
 
 ![](public/images/light-shapes-and-lens-spacings/adafruit_harmonics.png) *Many lenses can be spaced at half the located spacing, creating a tighter overall plot; as long as the variations don't line up, the variation is halved with each doubling. If someone wanted to double the exposure power, they could add a second array.*
-
-<br/><br/>
-
-![](public/images/light-shapes-and-lens-spacings/no_lens_harmonics.png) *The results from the no-lens measurement have a sudden cut-off at the edges of the 180x180mm test square. Because of this artificial edge, simulations for examining LED-strip spacings produced fascinating and idiosyncratic periodicity in variation.*
 
 <br/><br/>
 
