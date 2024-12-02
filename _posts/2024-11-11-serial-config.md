@@ -22,7 +22,7 @@ Serial-config is used by a prototyper during electronics development. Given a sc
 
 **The first is a user interface** that allows a user to explore and edit a device's settings when the device and interface are tethered together. This currently runs on a desktop, but can run on mobile. The user interface program is written by hand, and dynamically interprets a schema to a visual interface that can edit that schema. One section, a navigational tree, supports selecting reference types in the schema; when selected, another section, an edit panel, supports reading and writing the configuration values. The interface has additional functions to scan for available ports and select the device; read the config instance; navigate and edit it; display feedback to the user about current status and edit validation; and write an updated config back to the device.
 
-**The second resource is an embedded library** that lives within a client program on a device. It presents a typed interface to the client program; it represents and manages the configuration instance; it reads, versions, and updates the configuration data from non-volatile storage, in response to both user and device edits; it manages over-the-wire updates to the configuration, and presents a drop-in routine to the host program to do so; finally, it notifies the client program when a setting has changed. Some of the library is compiled from the schema, but much is written by hand around an internal interface.
+**The second resource is an embedded library** that lives within a client program on a device. It presents a typed interface to the client program; it represents and manages the configuration instance; it reads, versions, and updates the configuration data from non-volatile storage, in response to both user and device edits; it manages over-the-wire updates to the configuration, and presents a drop-in routine to the host program to do so. Some of the library is compiled from the schema, but much is written by hand around an internal interface.
 
 ---
 When tethered, these two parts connect and work together. Pairing them gives the user the best of two worlds: the user can edit the configuration in a more capable and resource-rich environment. A wire protocol transports commands for reads, writes, transactional commits, protocol synchronization, and error recovery. The library on the embedded device supports editing the configuration while using minimal resources.
@@ -92,7 +92,7 @@ struct humidity_sensor {
 };
 ```
 
-This is presented to the client program, along with a series of routines for retrieving an instance, committing updates, checking for updates, and subscribing to changes to specific structures. Implementations of these are described below.
+This is presented to the client program, along with a series of routines for retrieving an instance, committing updates, and checking for updates. Implementations of these are described below.
 
 # Serial-Config Implementation
 ## Schema
@@ -114,7 +114,7 @@ The compiler produces three files--two for the embedded library, and one for the
 ## Embedded Configuration Library
 A few parts of the embedded library are compiled: the declaration and initialization of the configuration instance, some artifacts about it (a reference to the root configuration instance and its type; the maximum depth of the configuration tree), and the accessor function that answers queries about collection member locations, sizes, and types.
 
-The rest of the library is written by hand around these fixtures; the compiled parts present an interface that allows this code to remain agnostic to the schema. This part implements a translation of protocol messages into field reading, writing, and transactional commits. It also implements persistent storage, retrieving the config for the client program, and notifying the client about updates.
+The rest of the library is written by hand around these fixtures; the compiled parts present an interface that allows this code to remain agnostic to the schema. This part implements a translation of protocol messages into field reading, writing, and transactional commits. It also implements persistent storage, and retrieving the config for the client program.
 
 ### Types, Instances, and Init
 The native data types are a straightforward translation of the python schema. Struct types are named after the label passed to the schema, and contains the schema's fields (these are primitives or references to nested collection types). Lists are represented as a struct containing a statically-sized array of their element type; primitives are inline arrays, while collection types are pointer arrays. The list structs also carry their capacity and current size.
