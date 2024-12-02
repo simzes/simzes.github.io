@@ -9,14 +9,12 @@ caption: A toolkit for compiling schemas to user-editable embedded device config
 ## Background
 Over the past few decades, the world of open-source electronics has blossomed into rich ecosystem of resources available for use by everyone, from hobbyists to electrical engineers. Open-source embededded programming environments, low-cost development boards, break-outs for sensors, electro-mechanical devices and more, software libraries for interacting with these external components, and connected web services have all made rapid electronics prototyping possible--with progressively less time, money, and knowledge.
 
-For example, it is possible to rapidly design and build a battery-operated humidity and temperature sensor that takes periodic measurements and sends them to a data display service over wifi; building one can take a few hours, and cost less than $50 total in parts. (This project was a real father-son project from 2017; we'll refer to it several times throughout this post.)
+For example, with relatively little knowledge, it is possible to rapidly design and build a battery-operated humidity and temperature sensor using a microcontroller with an integrated battery port and charger, a bus-enabled sensor, and example code that takes periodic measurements and sends them to a data display service over wifi. This project takes a few hours, and costs less than $50 total in parts. (This project was a real father-son project from 2017; we'll refer to it several times throughout this post.)
 
-But obstacles remain in translating a sensor prototype like this into a usable device or product.
-
-This post explores the design and implementation of serial-config, a toolkit for electronics prototyping that resolves some obstacles around user-friendly configuration of electronic devices.
+But obstacles remain in translating a sensor prototype like this into a usable device or product. This post explores the design and implementation of serial-config, a toolkit for electronics prototyping that resolves some obstacles around user-friendly configuration of electronic devices.
 
 ## Enter: Serial-Config
-Serial-config is a software tool that supports field-configuration of devices by non-expert users. Its software resources manage most of the configuration process, from the user interface for editing settings, down to the embedded library that updates and stores settings data. In between, it includes a protocol for transferring settings data.
+Serial-config is a software tool that supports field-configuration of devices by non-expert users. The software resources it generates manages most of the configuration process, from the user interface for editing settings, down to the embedded library that updates and stores settings data. In between, it includes a protocol for transferring updates.
 
 Serial-config is used by a prototyper during electronics development. Given a schema that describes a configuration, it generates two software resources to support field-configuration:
 
@@ -62,7 +60,7 @@ The interface is the same for all schemas. In the strip at the top are functions
 
 On the left side of the window, a hierarchical navigator lets a user explore and select collection-types in the schema.
 
-Once a navigation label is selected, its contents (primitive fields) display in the central panel, where a user can edit them. Edits are validated against the type size: lists have lengths, numbers have limits, etc.
+Once a navigation label is selected, its contents (primitive fields) display in the central panel, where a user can edit them. Edits are validated against the type: lists have lengths, numbers have limits, etc.
 
 While not shown here, lists of primitive and collection types have controls for adding or deleting entries, and moving them within the list. (The strings shown for the wireless ssid and password are a special case of list display, where a list of type char is displayed and edited as a single string.)
 
@@ -98,14 +96,14 @@ This is presented to the client program, along with a series of routines for ret
 ## Schema
 The schema structure and types are represented by a collection of lightweight classes in python. Two collection types are currently implemented:
 * structs are a key-value collection of field names and types
-* lists are a capacity and an element type.
+* lists are a capacity and an element type
 
 The schema does not support self-referencing types. Primitive types are represented as enumerated python objects, and carry their native data type label; most native numeric types are provided. A default value may be specifed.
 
 ## Schema Compiler
 The compiler produces three files--two for the embedded library, and one for the user interface.
 
-**The config header** (`config.h`) forms the interface to the embedded client program. Most of the header file is hand-written, aside from the signature of the `read_config()` function: this returns the schema instance, and is custom-typed to the schema's root collection. A compiled portion at the top declares native data types equivalent to the schema's structure.
+**The config header** (`config.h`) forms the interface to the embedded client program. Most of the header file is hand-written, aside from the schema-specific type signatures. A compiled portion at the top declares native data types equivalent to the schema's structure.
 
 **The config implementation** (`ardconfig.cpp`) manages the configuration instance on the device. The compiler stitches together two sections, one compiled and one hand-written. The compiled section has the instance allocation and its init code, the type and member labels needed for traversing the config, some defines used by the hand-written library (such as the root instance global), and the address look-up function. The hand-written section has code for an address resolver, configuration traversal, protocol parsing and interpretation, storage, interface functions, and local state.
 
@@ -158,12 +156,25 @@ enum ident_type {
 };
 ```
 
+The matched array of type sizes looks like this:
+```
+const int ident_sizes[] = {
+    sizeof(char),
+    sizeof(size_t),
+    sizeof(uint16_t)
+    -1,
+    sizeof(struct string),
+    -1,
+    ...
+};
+```
+
 Members of collection types are assigned enumerated values, supporting the accessor scheme (explained below). For the root struct, this looks like this:
 ```
 // Member accessor for struct humidity_sensor id_4
-enum ACCESSOR_STRUCT_humidity sensor {
-    ACCESSOR_STRUCT_humidity sensor_wireless_settings,
-    ACCESSOR_STRUCT_humidity sensor_sensor_settings
+enum ACCESSOR_STRUCT_humidity_sensor {
+    ACCESSOR_STRUCT_humidity_sensor_wireless_settings,
+    ACCESSOR_STRUCT_humidity_sensor_sensor_settings
 };
 ```
 
@@ -183,16 +194,20 @@ The accessor is the most important part of serial-config. It presents a uniform 
 
 Every field and collection in a schema is identified by an accessor path. This path is a numeric sequence that describes how to traverse the configuration, starting from the root structure. Within a collection type (struct, list, etc.), every member is assigned an index. For structs, the members are indexed by declaration order; for lists, the first three members are the capacity, type, and length, with element indices following.
 
-In our humidity sensor, the accessor [1, 0] locates the `poll_interval_minutes`, [0, 1, 0] accesses the capacity of the wireless ssid string, [0, 1, 1] accesses the current length of the wireless ssid string, and [0, 2, 3] accesses the first character of the wireless password.
+In our humidity sensor:
+* the accessor [1, 0] locates the `poll_interval_minutes` field
+* [0, 1, 0] accesses the capacity of the wireless ssid string
+* [0, 1, 1] accesses the current length of the wireless ssid string, and
+* [0, 2, 3] accesses the first character of the wireless password
 
-This is what the accessor block looks like for the humidity sensor's root struct:
+This is the accessor block for the humidity sensor's root struct:
 ```
 void accessor(void *treeref, uint8_t ident, uint8_t member,
               void **value, uint8_t *value_type, ...) {
 ...
     switch (ident) {
 ...
-    case IDENT_STRUCT_humidity_sensor: // accessing struct humidity sensor
+    case IDENT_STRUCT_humidity_sensor: // accessing struct humidity_sensor
         switch (member) {
         case ACCESSOR_STRUCT_humidity_sensor_wireless_settings:
             treeref = (void *) ((struct humidity_sensor *) treeref)->wireless_settings;
@@ -229,8 +244,7 @@ void accessor_path(uint8_t *accessor_path, uint8_t accessor_path_len,
     uint8_t finger_type = ROOT_STRUCT_IDENT;
 
     for (uint8_t i = 0; i < accessor_path_len; i++) {
-        accessor(finger, finger_type, accessor_path[i], access_type, &finger, &finger_type,
-                 code);
+        accessor(finger, finger_type, accessor_path[i], access_type, &finger, &finger_type, code);
         if (*code)
             return;
     }
@@ -266,7 +280,7 @@ void scan_config(void (*scan_fn)(uint8_t *, uint16_t, uint8_t), uint16_t offset)
     }
 }
 ```
-The iteration macro `accessor_foreach` enters the loop for every field in the configuration. This loop body transfers to/from store by calling a function, and adds the bytes to the total offset. (Note that the input function allows for reuse by storage and retrieval code.)
+The iteration macro `accessor_foreach` enters the loop for every field in the configuration. This loop body transfers to/from storage by calling a function, and adds the bytes to the total offset.
 
 **Versioning:** several instances of the configuration can exist in different storage slots. (The number of slots is up to the client and storage size; it is also up to the client application to use this feature. A straightforward use of slots is to always store a new configuration in the next slot, and revert to the previous or saved default if something does not work.) One headache of cross-compilation and diverse environments (8 bit, 16 bit, and 32 bit microcontrollers are encouraged) is that this slot size is hard to compute statically. Instead, this is done at setup time, using the scanning iterator walk the configuration and calculate the slot size.
 
@@ -282,21 +296,21 @@ The host-to-device packet begins with an opcode, two length fields, two binary p
 
 For example, a read for the `poll_interval_minutes` at accessor [1, 0] has a packet frame like:
 
-\<opcode read\> \<accessor length\> 0 \<accessor\> \\n
+`<opcode read> <accessor length> 0 <accessor> \n`
 
 or
 
-0x01 (read) 0x02 (accessor length) 0x00 (unused payload length) 0x01 0x00 (accessor) \n
+`0x01 (read) 0x02 (accessor length) 0x00 (unused payload length) 0x01 0x00 (accessor) \n`
 
 The device-to-host packet returns the host command's opcode, a status code summarizing the command result, one length field, a payload, and its own newline separator. A successful response to the above read looks like:
 
-\<opcode read\> \<status code\> \<read length\> \<read data\> \\n
+`<opcode read> <status code> <read length> <read data> \n`
 
 or
 
-0x01 (read) 0x00 (status success) 0x02 (read of 16-bit integer) 0x00 0x05 (read data) \n
+`0x01 (read) 0x00 (status success) 0x02 (read of 16-bit integer) 0x05 0x00 (read data) \n`
 
-This is what the protocol parsing code looks like on the device:
+This is some of the device's protocol parsing code:
 ```
 int opcode;
 int slot_1_len, slot_2_len;
@@ -323,20 +337,20 @@ while (true) {
 This code is somewhat complicated by the timeout implementation, and its disabling with the hold variable. It begins by waiting for the first three bytes: the opcode, then the two payload lengths. Once the total packet length is known and has been checked, it tries to parse each payload, then the newline command separator. All parsing functions (`wait_for_protocol_header`, `parse_length_field`, and `scan_through_newline`) return true in the case of timeout.
 
 ### Read and update workflows
-Aside from read and write commands, a few other commands allow the host to form an error-resilient, transactional workflow.
+Aside from read and write commands, a few other commands allow the host to form a resilient, transactional workflow.
 
 The first is a marco-polo command: the host sends a random byte sequence to the device, and expects to see the same byte sequence returned. This ensures both sides are synchronized.
 
-After reading the configuration, the host issues a hold command. When set, the update library waits indefinitely for follow-up writes; this allows the user to explore the configuration, make edits, and commit them to the device.
+After reading the configuration, the host issues a hold command. When set, the update library waits indefinitely for follow-up writes; this allows the user to explore the configuration, make edits, and commit them to the device. This may be changed to a keep-alive command in the future.
 
 The command set supports transactional logic for updating the configuration. The device and host implement compare-and-swap logic around a transaction id. The host begins an update by reading the device's current id. The transaction commit command includes the current id; if this matches the device's view, it returns an incremented id. This protects the device against errant commits, and allows the host to see if the commit succeeded; even if the return packet is lost, the host can recover from this by reading and comparing the current id. If any errors are encountered before the commit, the device restores the configuration from storage and returns control to the client program.
 
 A recovery mechanism handles scenarios where the host and device encounter an error during reads or updates. Error reports are not expected in normal usage, but it is common in hobbyist electronics programming to print debug messages over serial; this may fill the host's buffer with unrecognizable data when it firsts opens a serial connection. (Either party may also be misprogrammed.) If the host or device encounter an error, they issue a long synchronization sequence made up of 0s. Either party can start this sequence, and both expect the other to follow.
 
-The string of 0s provides some hope of a recovering from mis-aligned buffers. The sync sequence is twice as long as any packet, and will transition a protocol parser out of payload wait. (1200 0s has been chosen as the sync length: 255 is the maximum length of a payload body. There are two, for 510 total bytes. This is roughly doubled to create a distinguishable sequence of 600.) Once this occurs, a byte of 0 will eventually form the start of an interpreted packet; luckily, 0 has been reserved as an invalid opcode. Scanning into and counting this region of 0s can be done without additional memory, aside from the state as being in synchronization. After this sequence, any update must restart. If the device does not count this sequence, it will time out and return to the client code.
+The string of 0s provides some hope of a recovering from mis-aligned buffers. The sync sequence is twice as long as any packet, and will transition a protocol parser out of payload wait. (1200 0s has been chosen as the sync length: 255 is the maximum length of a payload body. There are two, for 510 total bytes. 600 is a distinguishable sequence, and is doubled to account for possible payload consumption.) Once this occurs, a byte of 0 will eventually form the start of an interpreted packet; luckily, 0 has been reserved as an invalid opcode. Scanning into and counting this region of 0s can be done without additional memory, aside from the state as being in synchronization. After this sequence, any update must restart. If the device does not count this sequence, it will time out and return to the client code.
 
 ## A Schema-to-UI Interpreter
-The user interface program is written by hand, and dynamically interprets a schema to a visual interface that can explore and edit that schema. The interpreter is written in javascript, executing in the vue framework over node, and packaged for desktop environments with electron. (Bluetooth and mobile support are possible in the future.)
+The user interface program is written by hand, and dynamically interprets a schema to a visual interface that can explore and edit an instance of the schema. The interpreter is written in javascript, executing in the vue framework over node, and packaged for desktop environments with electron. (Bluetooth and mobile support are possible in the future.)
 
 Every collection type in the schema generates two corresponding interface resources. The first is an editing panel that occupies most of the window, and displays the collection's primitive values as editable fields. Edits are validated according to the schema type (integer, string, etc). List elements can be added, moved, or deleted. List of characters are a special case; instead of listing each element separately, these are presented as one text box.
 
