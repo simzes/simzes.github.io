@@ -34,18 +34,19 @@ This initial version implements one complete strand across a common environment:
 The process of using serial-config begins with specifing a schema that describes the configuration. This is done in a python, using a collection of lightweight schema classes. This is what the settings look like for our humidity sensor (a wireless network login, and an interval setting for readings):
 
 ```
-string = serial_config.List("string", serial_config.PrimitiveTypes.CHAR.value, capacity=255)
+import serial_config as sc
+string = sc.List("string", sc.PrimitiveTypes.CHAR.value, capacity=255)
 
-wireless_settings = serial_config.Struct("wireless_settings",
-                                   serial_config.fields(network_ssid=string,
-                                                  network_password=string))
+wireless_settings = sc.Struct("wireless_settings",
+                              sc.fields(network_ssid=string,
+                                        network_password=string))
 
-sensor_settings = serial_config.Struct("polling_settings",
-                                 serial_config.fields(poll_interval_mins=serial_config.PrimitiveTypes.UINT16.value))
+sensor_settings = sc.Struct("polling_settings",
+                            sc.fields(poll_interval_mins=sc.PrimitiveTypes.UINT16.value))
 
-schema = serial_config.Struct("humidity_sensor",
-                        serial_config.fields(wireless_settings=wireless_settings,
-                                       sensor_settings=sensor_settings))
+schema = sc.Struct("humidity_sensor",
+                   sc.fields(wireless_settings=wireless_settings,
+                             sensor_settings=sensor_settings))
 ```
 The schema's root collection is a struct, with two subfields for wireless settings and sensor settings; the sensor settings structure is a number of minutes specified as an unsigned 16-bit integer; the wireless settings structure is a network ssid and password, which are both character strings no longer than 255 elements.
 
