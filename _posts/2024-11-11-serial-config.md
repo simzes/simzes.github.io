@@ -429,3 +429,59 @@ The compiler and internal interfaces will need some architectural work to suppor
 
 ### Integration with PYES
 This project is a related idea to PYES, which creates a similar desktop development kit but with a focus on programming devices with binaries. All that PYES needs to integrate serial-config is an association of binaries and configurations, and a way to ask a device which binary is currently loaded.
+
+## Code Resources and Summary
+The code for serial-config is located at: [https://github.com/simonsbench/serial-config](https://github.com/simonsbench/serial-config)
+
+### Compiler
+The compiler is located at [https://github.com/simonsbench/serial-config/blob/main/serial_config.py](https://github.com/simonsbench/serial-config/blob/main/serial_config.py)
+
+In general, for each section of the library file there is one global method that operates on the entire schema, and one corresponding method implemented on each schema class. The PrimitiveTypes, Schema, and List classes represent the three implemented schema node types
+
+The `generate_config_header` routine and `generate_type_definitions` schema methods produce the `config.h` library header file.
+
+Several functions generate the library file:
+- `generate_init` synthesizes the object init
+- `generate_accessor_enums` makes the accessor enumerations for each collection type
+- `generate_idents` makes the type enumerations for all types
+- `generate_instance_fixtures` makes the compiled definitions
+- `accessor_types` and `status_codes` have the accessor types and status code
+- `generate_accessor` produces the accessor method
+
+The `make_js_schema` routine synthesizes the interface's `config.json` file.
+
+### Embedded Library
+The hand-written embedded library is located at [https://github.com/simonsbench/serial-config/blob/main/arduino_src/ardlib.c.part](https://github.com/simonsbench/serial-config/blob/main/arduino_src/ardlib.c.part)
+
+- `accessor_path` resolves one accessor through the config tree
+- `accessor_foreach` iterates over every collection and primitive field; `scan_next_iter` repositions the iterator in between loop rounds
+- `scan_config` loads/stores the configuration from storage
+- `handle_protocol` implements the protocol: `wait_for_protocol_header` waits until enough of the header has arrived to begin parsing, `parse_length_field` transfers a payload into a byte array. With the opcode and payloads ready, the rest of the function jumps to the command's handler. Successful commands loop, failed commands run the `handle_sync` routine, commits return and store the updated config, and cancels re-read the config.
+- the rest of the file sets up the configuration instance and manages local state
+
+### Interface
+The electron instance is stored in the `electron_app` directory.
+
+#### electron/main/index.ts
+`index.ts` implements the IPC calls from the interface renderer. It:
+- loads the default `config.json` schema from `/static` (`get_schema`)
+- reads the config from the device (`read_device_config`)
+- writes updated fields to the device (`update_schema`)
+- scans for devices with available serial ports (`serial_paths`)
+
+Schemas are prepared for reads. The `next_read_accessor` and `find_read_accessors` functions scan through the schema and find available accessors to read. This can be done in iterative waves, because lists need their length first, before any entries are read.
+
+Schemas are also prepared for updates. The `find_diff` routine compares the last-read and updated schema, putting fields that differ into an update collection of accessors and binary serializations.
+
+The `SerialProtocol` object handles most of the interaction with the device, for reads and writes. The `handle_read` method handles data receipt, and parses it depending on the current state; on success, the next command-response set is written with the corresponding command method. `write_read_accessor` handles a read command, `write_change` handles an update command, `write_marco` writes out the synchronization packet, etc.
+
+For encoding and decoding, the `read_definition` and `write_definition` functions parse or write values between the schema's javascript values and the binary wire values.
+
+#### App.vue
+`src/App.vue` implements the interface function. It defines the scan, port drop-down, reset, read, and sync buttons. It delegates interpreting the schema to the `SchemaNode.vue` component.
+
+#### SchemaNode.vue
+`SchemaNode` handles the interpretation of one schema collection into a hierarchy navigation label, and its fields into an edit panel. When the navigation label for a node is selected, its display element is activated and its contents are teleported to the `#panel` label.
+
+#### Display*
+The `DisplayList`, `DisplayStruct`, and `DisplayDispatch` components implement display of a collection's fields. (DisplayDispatch is used when a list has a collection element type, and displays any of its fields in the list's edit panel.)
