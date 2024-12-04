@@ -366,7 +366,7 @@ The variety and ambiguity of data types across microcontrollers causes some addi
 
 The type labels for int and long are ambiguous. So are double and float; some environments implement a 64-bit double, while others use 32-bits for both. In some situations, the interface guesses at the size. In the case where the interface and device have mismatched data type sizes, the write will always fail and halt an update. (A prototyper will run into this during testing.)
 
-An experimental (and currently incomplete) feature supports ambiguously sized types, for `ints`, `doubles`, etc: during read, the field size is sent by the embedded device, which has a static look-up table of all types in the config. The interface stores this byte size in the schema instance, where it supersedes the default size. 
+An experimental (and currently incomplete) feature supports ambiguously sized types, for ints, doubles, etc: during read, the field size is sent by the embedded device, which has a static look-up table of all types in the config. The interface stores this byte size in the schema instance, where it supersedes the default size. (This is currently incomplete, because of some complexity in updating list types. New list elements are created by duplicating the list element's schema type; this is never read, so any byte length discovered needs to be updated in all list nodes above it. Finally, an empty list that is given an initial element in the interface is never read from the device; the interface needs to read an element that isn't in the config instance to find this size.)
 
 One future route to resolving this is to write a configuration schema whose only purpose is to gather useful architectural information, in byte sizes of various types and endian order. The results of reading this configuration schema form an architecture-specific size table, which can be stored alongside a schema.
 
@@ -420,13 +420,13 @@ Different strategies may make for a smaller, if less capable library. For many s
 Development and testing can show how the two approaches differ for different schema sizes. The current approach may be more efficient for larger schemas, while a fully-compiled approach may work best for smaller schemas.
 
 ### More Embedded Environments and Update Protocols
-Arduino is an excellent environment, but several others are popular. Raspberry pis, pi microcontrollers, circuit python, and rust are all possible options. Storage on sd cards and other media should be supported, especially to support larger configurations.
+Arduino is an excellent environment, but several others are popular. Raspberry pis, pi microcontrollers, circuit python, and rust are all possible options. Storage on sd cards and other media should be supported -- this can support larger configurations.
 
 USB is an excellent first choice for connecting to devices. Others are bluetooth, web servers hosted on microcontrollers, wifi, and external servers (that a microcontroller dials into).
 
 For interfaces, mobile is an excellent next step; an on-board touchscreen may be possible.
 
-The compiler and internal interfaces will need some architectural work to support multiple environments, and expressing their selection. Some details of the schema format and the protocol may not be portable. For example, bluetooth assigns one address to each field.s
+The compiler and internal interfaces will need some architectural work to support multiple environments, and expressing their selection. Some details of the schema format and the protocol may not be portable. For example, bluetooth assigns one address to each field.
 
 ### Integration with PYES
 This project is a related idea to PYES, which creates a similar desktop development kit but with a focus on programming devices with binaries. All that PYES needs to integrate serial-config is an association of binaries and configurations, and a way to ask a device which binary is currently loaded.
@@ -437,12 +437,12 @@ The code for serial-config is located at: [https://github.com/simonsbench/serial
 ### Compiler
 The compiler is located at [https://github.com/simonsbench/serial-config/blob/main/serial_config.py](https://github.com/simonsbench/serial-config/blob/main/serial_config.py)
 
-In general, for each section of the library file there is one global method that operates on the entire schema, and one corresponding method implemented on each schema class. The PrimitiveTypes, Schema, and List classes represent the three implemented schema node types
+In general, for each section of the library file there is one global method that operates on the entire schema, and one corresponding method implemented on each schema class. The PrimitiveTypes, Schema, and List classes represent the three implemented schema node types.
 
 The `generate_config_header` routine and `generate_type_definitions` schema methods produce the `config.h` library header file.
 
 Several functions generate the library file:
-- `generate_init` synthesizes the object init
+- `generate_init` synthesizes the object instances and inits
 - `generate_accessor_enums` makes the accessor enumerations for each collection type
 - `generate_idents` makes the type enumerations for all types
 - `generate_instance_fixtures` makes the compiled definitions
@@ -457,7 +457,7 @@ The hand-written embedded library is located at [https://github.com/simonsbench/
 - `accessor_path` resolves one accessor through the config tree
 - `accessor_foreach` iterates over every collection and primitive field; `scan_next_iter` repositions the iterator in between loop rounds
 - `scan_config` loads/stores the configuration from storage
-- `handle_protocol` implements the protocol: `wait_for_protocol_header` waits until enough of the header has arrived to begin parsing, `parse_length_field` transfers a payload into a byte array. With the opcode and payloads ready, the rest of the function jumps to the command's handler. Successful commands loop, failed commands run the `handle_sync` routine, commits return and store the updated config, and cancels re-read the config.
+- `handle_protocol` implements the protocol: `wait_for_protocol_header` waits until enough of the header has arrived to begin parsing, `parse_length_field` transfers a payload into a byte array. With the opcode and payloads ready, the rest of the function jumps to the command's handler. Successful commands loop, failed commands run the `handle_sync` routine, commits return and store the updated config, and cancels re-read the config
 - the rest of the file sets up the configuration instance and manages local state
 
 ### Interface
@@ -479,10 +479,10 @@ The `SerialProtocol` object handles most of the interaction with the device, for
 For encoding and decoding, the `read_definition` and `write_definition` functions parse or write values between the schema's javascript values and the binary wire values.
 
 #### App.vue
-`src/App.vue` implements the interface function. It defines the scan, port drop-down, reset, read, and sync buttons. It delegates interpreting the schema to the `SchemaNode.vue` component.
+`src/App.vue` implements the interface function. It defines the scan, port drop-down, reset, read, and sync buttons. It delegates interpreting the schema to the `SchemaNode.vue` component. It maintains the schema instance, and learns of edits through events that it applies to the instance.
 
 #### SchemaNode.vue
-`SchemaNode` handles the interpretation of one schema collection into a hierarchy navigation label, and its fields into an edit panel. When the navigation label for a node is selected, its display element is activated and its contents are teleported to the `#panel` label.
+`SchemaNode` handles the interpretation of one schema collection into a hierarchy navigation label, and its fields into an edit panel. When the navigation label for a node is selected, its display element is activated and its contents are teleported to the `#panel` label. Sub-collections are recursively interpreted by more SchemaNode instances.
 
 #### Display*
 The `DisplayList`, `DisplayStruct`, and `DisplayDispatch` components implement display of a collection's fields. (DisplayDispatch is used when a list has a collection element type, and displays any of its fields in the list's edit panel.)
