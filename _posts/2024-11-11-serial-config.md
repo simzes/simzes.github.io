@@ -18,7 +18,7 @@ Serial-config is a software tool that supports field-configuration of devices by
 
 Serial-config is used by a prototyper during electronics development. Given a schema that describes a configuration, it generates two software resources to support field-configuration:
 
-**The first is a user interface** that allows a user to explore and edit a device's settings when the device and interface are tethered together. This currently runs on a desktop, but can run on mobile. The user interface program is written by hand, and dynamically interprets a schema to a visual interface that can edit that schema. One section, a navigational tree, supports selecting reference types in the schema; when selected, another section, an edit panel, supports reading and writing the configuration values. The interface has additional functions to scan for available ports and select the device; read the config instance; navigate and edit it; display feedback to the user about current status and edit validation; and write an updated config back to the device.
+**The first is a user interface** that allows a user to explore and edit a device's settings when the device and interface are tethered together. This currently runs on a desktop, but can be implemented in mobile environments in the future. The user interface program is written by hand, and dynamically interprets a schema to a visual interface that can edit that schema. One section, a navigational tree, supports selecting reference types in the schema; when selected, another section, an edit panel, supports reading and writing the configuration values. The interface has additional functions to scan for available ports and select the device; read the config instance; navigate and edit it; display feedback to the user about current status and edit validation; and write an updated config back to the device.
 
 **The second resource is an embedded library** that lives within a client program on a device. It presents a typed interface to the client program; it represents and manages the configuration instance; it reads, versions, and updates the configuration data from non-volatile storage, in response to both user and device edits; it manages over-the-wire updates to the configuration, and presents a drop-in routine to the host program to do so. Some of the library is compiled from the schema, but much is written by hand around an internal interface.
 
@@ -68,7 +68,7 @@ While not shown here, lists of primitive and collection types have controls for 
 At the bottom, status updates for device interactions and edit validation are displayed.
 
 ### Embedded Library Generation
-For the embedded library, serial-config generates an equivalent, typed interface for the configuration at the start of `config.h`
+For the embedded library, serial-config generates a typed interface that is equivalent to the configuration schema at the start of `config.h`:
 ```
 struct string {
     const size_t capacity;
@@ -91,7 +91,7 @@ struct humidity_sensor {
 };
 ```
 
-This is presented to the client program, along with a series of routines for retrieving an instance, committing updates, and checking for updates. Implementations of these are described below.
+This is available to the client program, along with a series of routines for retrieving an instance, committing updates, and checking for updates. Implementations of these are described below.
 
 # Serial-Config Implementation
 ## Schema
@@ -108,7 +108,7 @@ The compiler produces three files--two for the embedded library, and one for the
 
 **The config implementation** (`ardconfig.cpp`) manages the configuration instance on the device. The compiler stitches together two sections, one compiled and one hand-written. The compiled section has the instance allocation and its init code, the type and member labels needed for traversing the config, some defines used by the hand-written library (such as the root instance global), and the address look-up function. The hand-written section has code for an address resolver, configuration traversal, protocol parsing and interpretation, storage, interface functions, and local state.
 
-**The json schema** is an analogous json translation of the python schema. Little is done by the compiler: the python classes and types are translated into text labels, and some sorting and annotation is done on structure fields for straightforward access.
+**The json schema** is an analogous translation of the python schema into json. Little is done by the compiler: the python classes and types are translated into an object interface with labels, and some sorting and annotation is done on struct fields for straightforward access.
 
 ## Embedded Configuration Library
 A few parts of the embedded library are compiled: the declaration and initialization of the configuration instance, some artifacts about it (a reference to the root configuration instance and its type; the maximum depth of the configuration tree), and the accessor function that answers queries about collection member locations, sizes, and types.
@@ -116,9 +116,9 @@ A few parts of the embedded library are compiled: the declaration and initializa
 The rest of the library is written by hand around these fixtures; the compiled parts present an interface that allows this code to remain agnostic to the schema. This part implements a translation of protocol messages into field reading, writing, and transactional commits. It also implements persistent storage, and retrieving the config for the client program.
 
 ### Types, Instances, and Init
-The native data types are a straightforward translation of the python schema. Struct types are named after the label passed to the schema, and contains the schema's fields (these are primitives or references to nested collection types). Lists are represented as a struct containing a statically-sized array of their element type; primitives are inline arrays, while collection types are pointer arrays. The list structs also carry their capacity and current size.
+The native data types are a straightforward translation of the python schema. Struct types are named after the label passed to the schema, and contain the schema's fields (these are primitives or references to nested collection types). Lists are represented as a struct containing a statically-sized array of their element type; primitives are inline arrays, while collection types are pointer arrays. The list structs also carry their capacity and current size.
 
-There is one configuration instance allocated statically in memory. It is defined in bottom-up fashion during init: static initializers set up default schema values, control fields, and hierarchical references. References and control fields (a list's capacity) are important, and separate from updatable settings: these are are typed and initialized as `const` members, minimizing catastrophic misinterpretations by the client library.
+One instance of the configuration is allocated statically in memory. It is defined in bottom-up fashion during init: static initializers set up default schema values, control fields, and hierarchical references. References and control fields (a list's capacity) are important, and separate from updatable settings: these are are typed and initialized as `const` members, minimizing catastrophic misinterpretations by the client library.
 
 This is what an instance and its initialization look like in the library file for the humidity sensor:
 ```
@@ -282,7 +282,7 @@ void scan_config(void (*scan_fn)(uint8_t *, uint16_t, uint8_t), uint16_t offset)
     }
 }
 ```
-The iteration macro `accessor_foreach` enters the loop for every field in the configuration. This loop body transfers to/from storage by calling a function, and adds the bytes to the total offset.
+The iteration macro `accessor_foreach` enters the loop for every field in the configuration. This loop body transfers to/from storage by calling a function, and adds the bytes to the total offset. This storage routine is used to commit an updated configuration to memory, or revert back to a previous version; this is done if an update fails.
 
 **Versioning:** several instances of the configuration can exist in different storage slots. (The number of slots is up to the client and storage size; it is also up to the client application to use this feature. A straightforward use of slots is to always store a new configuration in the next slot, and revert to the previous or saved default if something does not work.) One headache of cross-compilation and diverse environments (8 bit, 16 bit, and 32 bit microcontrollers are encouraged) is that this slot size is hard to compute statically. Instead, this is done at setup time, using the scanning iterator walk the configuration and calculate the slot size.
 
@@ -356,7 +356,7 @@ The user interface program is written by hand, and dynamically interprets a sche
 
 Every collection type in the schema generates two corresponding interface resources. The first is an editing panel that occupies most of the window, and displays the collection's primitive values as editable fields. Edits are validated according to the schema type (integer, string, etc). List elements can be added, moved, or deleted. List of characters are a special case; instead of listing each element separately, these are presented as one text box.
 
-The second resource is an labelled entry in the navigation tree. This tree is placed on the left side on the screen, and allows exploration and selection of collections. This is a common paradigm from file system navigation. When the entry for a configuration is selected, its editing panel displays; the tree can fold/unfold; list elements are displayed by index.
+The second resource is a labelled entry in the hierarchical navigation tree. This tree is placed on the left side on the screen, and allows exploration and selection of collections. This is a common paradigm from file system navigation. When an entry for a configuration is selected, its editing panel displays; the tree can fold/unfold; list elements are displayed by index.
 
 ### Data Representation and Portability
 One subtle implementation detail is around managing data values in a javascript environment that need to type and store across a variety of native architectures. There are two sources of data input and output: interface display and user edits, and binary reads and writes from wire communication. Both data sources have a collection of encoders/decoders that parse data into a common internal format from user edits and binary reads, and present it for user display or binary writes.
@@ -367,7 +367,7 @@ The variety and ambiguity of data types across microcontrollers causes some addi
 
 The type labels for int and long are ambiguous. So are double and float; some environments implement a 64-bit double, while others use 32-bits for both. In some situations, the interface guesses at the size. In the case where the interface and device have mismatched data type sizes, the write will always fail and halt an update. (A prototyper will run into this during testing.)
 
-An experimental (and currently incomplete) feature supports ambiguously sized types, for ints, doubles, etc: during read, the field size is sent by the embedded device, which has a static look-up table of all types in the config. The interface stores this byte size in the schema instance, where it supersedes the default size. (This is currently incomplete, because of some complexity in updating list types. New list elements are created by duplicating the list element's schema type; this is never read, so any byte length discovered needs to be updated in all list nodes above it. Finally, an empty list that is given an initial element in the interface is never read from the device; the interface needs to read an element that isn't in the config instance to find this size.)
+An experimental (and currently incomplete) feature supports ambiguously sized types, for ints, doubles, etc: during read, the field size is sent by the embedded device, which has a static look-up table of all types in the config. The interface stores this byte size in the schema instance, where it supersedes the default size. (This is currently incomplete, because of some implementation complexity in updating list types. New list elements are created by duplicating the list element's schema type; this type entry is never read from the device, so any byte length discovered needs to be updated in all list element type nodes above it. Finally, an empty list that is given an initial element in the interface is never read from the device.)
 
 One future route to resolving this is to write a configuration schema whose only purpose is to gather useful architectural information, in byte sizes of various types and endian order. The results of reading this configuration schema form an architecture-specific size table, which can be stored alongside a schema.
 
@@ -408,12 +408,12 @@ The UI can be improved for extensibility:
 ### Validation
 This current setup has limited ability to support custom validation outside of a type's natural size limit and list capacity. This is partly due to the awkwardness of expressing the schema and its compiler in python, while the interface runs in a separate javascript application.
 
-There are a few options: one is to try and co-package python with electron; another is to support referencing javascript pythons in function, or adding validation code to the schema in javascript.
+There are a few options: one is to try and co-package python with electron; another is to support referencing validation functions written in javascript from the python schema environment, or adding validation code to the schema in javascript.
 
 A third option is to design a lightweight validation language, and interpret it in javascript; it may also be possible to move validation onto the device, if there's space for it.
 
 ### ECC
-The current protocol does not include error-correcting codes along with its payloads. For devices with enough program space, this would make transmission more reliable and faster. Although not currently implemented, a lightweight solution is to read after writes, to double-check the corrent value is on the device.
+The current protocol does not include error-correcting codes along with its payloads. For devices with enough program space, this would make transmission more reliable. Although not currently implemented, a lightweight solution is to read after writes, to double-check the corrent value is on the device.
 
 ### Low-resource embedded library
 The program size of serial-config's embedded library is significant. Several things take up space: adapting the schema types and structure to an abstract method, supporting individual reads and writes to arbitrary addresses, and building a reliable, transactional protocol. These made serial-config easy to develop and debug as well.
