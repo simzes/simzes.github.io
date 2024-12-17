@@ -10,11 +10,11 @@ caption: Search algorithms for synthesizing a light-adjusting filter shape
 
 *[Previous work first explained projection issues](https://simonsbench.net/flatbed-exposure-sketch) and sketched out the idea, and a [later project](https://simonsbench.net/light-shapes-and-lens-spacings) demonstrated that exposure variation could be minimized sufficiently for many processes through measurement and simulation of different lenses.*
 
-A follow-on project for prototyping a scanning photo-exposure unit is exploring generating silhouettes. These are flat shapes placed in profile top of an LED and its lens, and selectively trim specific areas of the light shape. Ideally, this minimizes the cumulative exposure variation across the strip.
+A follow-on project for prototyping a scanning photo-exposure unit is exploring generating silhouettes. This is a flat shape placed in profile over an LED and its lens, and selectively trim specific areas of the light shape. Ideally, this minimizes the cumulative exposure variation across the strip for more sensitive processes.
 
-The 3-5% variation achieved through careful choice of spacing alone is excellent for many processes using an emulsion layer; these have variation tolerances upwards of 20%. But this level of variation does not work for more sensitive processes, like platinum print photography and cyanotypes; the artifact of the lights combining, in the form of a big-hump, little-hump pattern, will image. These processes need less than 1% variation.
+The 3-5% variation achieved through careful choice of spacing alone is excellent for many processes using an emulsion layer; these have variation tolerances upwards of 20%. But this level of variation does not work for more sensitive processes, like platinum print photography and cyanotypes; the artifact of the lights combining, in the form of the characteristic big-hump, little-hump pattern, will image onto the print. These processes need less than 1% variation.
 
-This post examines a search algorithm for synthesizing the shape of this filter, finding that a greedy algorithm and an heuristic that maintains edge smoothness (and consequently manufacturability) can synthesize a mask that lower the variation to under 0.5%.
+This post examines a search algorithm for synthesizing the shape of this filter, finding that a greedy algorithm and a heuristic that maintains edge smoothness (and consequently manufacturability) can synthesize a mask that lower the variation to under 0.5%.
 
 ## State
 The measurement data used to find ideal spacings is reused; this is a 2D matrix of intensity values. This experiment introduces another 2D matrix of the same size representing the silhouette mask; the mask uses 0/1 values to represent selecting (1) or removing (0) the light from each square cell in the measurement grid. The intensity matrix multiplied by the mask matrix produces a new matrix that simulates the light, lens, and mask combined. The same spacing and addition code translates this multiplied matrix into a simulation of the entire strip.
@@ -52,4 +52,4 @@ This heuristic reminds me of surface tension; the edge creeps outwards, until it
 
 With this heuristic, the variation in the cumulative exposure output was between 0.2 and 0.3%.
 
-One additional detail is that the search worked better when the trim value was lowered past the minimum exposure level in the unfiltered strip. This turned out to be because these minimum points prevented the mask from reaching deep enough into some other areas; they were outside the achievable slope rate of the filter.
+One additional detail is that the search worked better when the trim value was lowered past the minimum exposure level in the unfiltered strip, to 95%. This turned out to be because these minimum points prevented the mask from reaching deep enough into some other areas; they were outside the achievable slope rate of the filter.
