@@ -8,7 +8,7 @@ caption: Search algorithms for synthesizing a light-adjusting filter shape
 
 *This is part of a series exploring the design of a novel scanning photo-exposure technique for screen printing and other light-sensitive media (cyanotypes, platinum and palladium prints, photo-chemical etching, etc). This exposure technique scans a light strip across the screen and stencil, using focusing lenses to achieve the excellent exposure characteristics of a room-sized projection lamp in the compact space of a typical light table.*
 
-*Previous work first sketched out the idea, and then demonstrated that exposure variation could be minimized sufficiently for many processes through measurement and simulation of different lenses.*
+*[Previous work first explained projection issues](https://simonsbench.net/flatbed-exposure-sketch) and sketched out the idea, and a [later project](https://simonsbench.net/light-shapes-and-lens-spacings) demonstrated that exposure variation could be minimized sufficiently for many processes through measurement and simulation of different lenses.*
 
 A follow-on project for prototyping a scanning photo-exposure unit is exploring generating silhouettes. These are flat shapes placed in profile top of an LED and its lens, and selectively trim specific areas of the light shape. Ideally, this minimizes the cumulative exposure variation across the strip.
 
