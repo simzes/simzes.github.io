@@ -18,13 +18,15 @@ An ideal silhouette shape lowers the cumulative exposure variation across the st
 
 ![](public/images/light-shapes-and-lens-spacings/thor_accum_smoothed_out.png)*This is what a cumulative exposure looks like; an individual spot is included. Note the humps on the pattern's plateau.*
 
-![](public/images/filter-search/ideal_cumulative.png)*This is what the same light spot (copied a few more times) looks like (orange), compared to its profile after flattening with a silhouette filter (green).*
+![](public/images/filter-search/ideal_cumulative.png)*This is what the same light spot (copied a few more times) looks like (orange), compared to its profile after flattening with a silhouette filter (green). The flat plateau is ideal.*
 
-This post examines a search algorithm for synthesizing the shape of this filter, finding that a greedy algorithm using a heuristic that evaluates and maintains edge smoothness (and consequently manufacturability) can synthesize a mask that lower the variation to under 0.5%.
+This post examines a search algorithm for synthesizing the shape of this filter, finding that a greedy algorithm using a heuristic that evaluates and maintains edge smoothness (and consequently manufacturability) can synthesize a mask that lowers the variation to under 0.5%.
 
 ## Search State
 ### Measurement and Mask
-The measurement data used to find ideal spacings is reused; this is a 2D matrix of intensity values. This experiment introduces another 2D matrix of the same size representing the silhouette mask; the mask uses 0/1 values to represent selecting (1) or removing (0) the light from each square cell in the measurement grid. The intensity matrix multiplied by the mask matrix produces a new matrix that simulates the light, lens, and mask combined. The same spacing and addition code translates this multiplied matrix into a simulation of the entire strip.
+The measurement data used to find ideal spacings is reused; this is a 2D matrix of intensity values. This experiment introduces another 2D matrix of the same size representing the silhouette mask; the mask uses 0/1 values to represent selecting (1) or removing (0) the light from each square cell in the measurement grid. The intensity matrix multiplied by the mask matrix produces a new matrix that simulates the filter applied to the light spot.
+
+The same spacing and addition code used for the earlier simulation project translates this filtered matrix into a simulation of the entire strip.
 
 ### Trim and Column Error
 In addition to these two matrices, a "trim" value is specified as the desired exposure level. This is at most the minimum exposure level across the strip.
