@@ -12,6 +12,8 @@ caption: Search algorithms for synthesizing a light-adjusting filter shape
 
 A follow-on project for prototyping a scanning photo-exposure unit is creating silhouettes for minimal exposure variation. This is a flat shape placed in profile over an LED and its lens, and selectively trim specific areas of the light shape. (For example, the bat signal, used to summon the batman, is made with a bat-shaped silhouette placed over a search light.)
 
+![](public/images/filter-search/filter_cover.svg) *A silhouette filtering out some light from the edges.*
+
 An ideal silhouette shape lowers the cumulative exposure variation across the strip, making the scanning technique work for more sensitive processes. The 3-5% variation achieved through careful choice of spacing alone is excellent for many processes using an emulsion layer; these have variation tolerances upwards of 20%. But this level of variation does not work for more sensitive processes, like platinum print photography and cyanotypes; the artifact of the lights combining, in the form of the characteristic big-hump, little-hump pattern, will image in the print. These processes need less than 0.5% to 1% variation.
 
 This post examines a search algorithm for synthesizing the shape of this filter, finding that a greedy algorithm using a heuristic that evaluates and maintains edge smoothness (and consequently manufacturability) can synthesize a mask that lower the variation to under 0.5%.
@@ -34,6 +36,8 @@ First, whenever a cell in column *i* is filtered, several others columns are in 
 
 Second, the columns in a symmetric group with the filtered column *i* are also impacted. The same filter design is (ideally there's only one for the light spots that have converged overlap) placed over every light, so a blocked cell will show up in the same place on each one.
 
+![](public/images/filter-search/balance_symmetry.svg) *Initial balance and symmetry expansions from one point, for two spaced spots.*
+
 The balance and symmetry groups cascade all through the filter; starting from a column *i*, there is a balance group that contributes to the same spot and a symmetric group that mirrors this spot on the filter. But the balance group also has a symmetry group, and the symmetry group also has a balance group. And so on.
 
 The cyclic groups of both sets will converge, but it is not useful to try and solve for these groups directly; if the spacing has a period of 1, then the columns impacted by any change to the filter are... every column!
@@ -51,6 +55,8 @@ A heuristic that did work is one that ensures the mask edge is relatively smooth
 The heuristic used in the search has two conditions:
 * the column must have some positive error to be considered in the search
 * the column's heuristic value is the slope delta, plus 2
+
+![](public/images/filter-search/slope_deltas.svg) *Collections of positively sloped, 0-sloped, and negatively sloped.*
 
 These rules keep the filter edge smooth, allowing the search to expand outwards to find the boundary made by the trim level. Cells that form valleys into the filter edge are prioritized for being filled in; cells that are smooth have a middling slope delta; cells that form mountains away from the filter edge are deprioritized. This enforces smoothness of the filter shape to make it manufacturable, while allowing some local conformance to error peaks. (This heuristic reminds me of surface tension; the edge creeps outwards, until it hits the error limit, and stops. Like surface tension, it is a physical property that acts between neighbors and creates a global trend.)
 
