@@ -269,7 +269,7 @@ Starting from the root structure, the function scans through the accessor path, 
 
 **Storage:** the library implementing storage is oblivious to the schema structure. To traverse the configuration, it incrementally scans across members until the resolver reports an out-of-bounds index. There are two passes for each collection type. In one pass, all primitive fields are written into the store (or read from it) and their sizes added to an offset; in a second pass, all collection sub-fields are recursively explored.
 
-This storage scheme relies on the offset of every field being consistent; the library will first load a stored instance by scanning the init instance. This property is guaranteed by the memory layout of instance structures. Variadic structures (such as lists) claim the entire footprint possible across all schema instances. The storage code ignores data fields indicating current use (list length), and always walks and stores the whole footprint (list capacity).
+This storage scheme relies on the offset of every field being consistent across all variants of the schema; the library will first load a stored instance by scanning the init instance. This property is guaranteed by the memory layout of instance structures. Variadic structures (such as lists) claim the entire footprint possible across all schema instances. The storage code ignores data fields indicating current use (list length), and always walks and stores the whole footprint (list capacity).
 
 The accessor scanning function, `scan_config`, is also straightforward (the iterator implementation for `accessor_foreach` is not):
 ```
@@ -294,7 +294,7 @@ The iteration macro `accessor_foreach` enters the loop for every field in the co
 
 **Versioning:** several instances of the configuration can exist in different storage slots. (The number of slots is up to the client and storage size; it is also up to the client application to use this feature. A straightforward use of slots is to always store a new configuration in the next slot, and revert to the previous or saved default if something does not work.) One headache of cross-compilation and diverse environments (8 bit, 16 bit, and 32 bit microcontrollers are encouraged) is that this slot size is hard to compute statically. Instead, this is done at setup time, using the scanning iterator walk the configuration and calculate the slot size.
 
-By design, the accessor is implemented to minimize the amount of variable memory used and move as much information about the schema structure into instruction memory; microcontrollers tend to have more instruction space available. It also reuses the accessor function across multiple uses; a schema-specific compilation of the protocol and storage code would likely duplicate this information, taking up more space.
+By design, the accessor is implemented to minimize the amount of variable memory used and move as much information about the schema structure into instruction memory; microcontrollers tend to have more instruction space available. It also reuses the accessor function across multiple uses; a schema-specific compilation duplicates this information in the protocol and storage code, taking up more space. (The support code for the schema may be significant compared to this duplication.
 
 ## Protocol
 The serial protocol is designed to be compact, memory-safe, resilient against packet alignment and mis-programming, and easy to program and verify. The host initiates all interactions, and implements the complex aspects of the read and update state machines.
@@ -410,15 +410,15 @@ Implementing this within the static allocation scheme will be tricky for collect
 This project is a related idea to a previous project, PYES, which is a similar electronics development kit that focuses on the domain of flashing a selected embedded binary onto a tethered device; it creates a desktop interface with icons and descriptions of programs to explore and load.
 
 Configuration and binary flashing are excellent initial patterns. Others are:
-* data display and storage: many electronic devices exist to capture data. A service for transmitting, displaying, storing, and exporting this data would complement a wide range of devices. (The Arduino IDE has a data graphing service that automatically converts logged data to graphs.)
-* commands: the ability to execute a specific function on a device, controlled by a button or input form in the user interface, would be a huge advance. This is commonly used for controlling machines, and testing out settings (multi-color LED settings, etc.).
-* logging and tracing: embedded programs can be difficult to debug, because there are not enough resources to isolate the program executing and inspect its status. Debuggin equipment is available, but expensive. A low-overhead logging and tracing framework, that transports debug information to a host, could help generate reports about issues.
-* status and events: many embedded programs are implemented as state machines
+* data display and storage: many electronic devices capture data. A service for transmitting, displaying, storing, and exporting this data would complement a wide range of devices. (The Arduino IDE has a data graphing service that automatically converts logged data to graphs.)
+* commands: the ability to execute a specific function on a device, controlled by a button or input form in the user interface, would be a huge advance. This is commonly used for controlling machines, and testing out settings (multi-color LED settings, etc).
+* logging and tracing: embedded programs can be difficult to debug, because there are not enough resources to isolate the program executing and inspect its status. Debugging equipment is available, but expensive. A low-overhead logging and tracing framework, that transports debug information to a host, could help generate reports about issues.
+* status and events: many embedded programs are implemented as state machines. Synchronizing the current status and transitions into a view for the host can support dashboards and state display.
 
 ### UI File-Saving and Extensibility
 The user interface is capable, but minimally so. Some development work can add useful features.
 
-Configuration instances can be saved like files into folders, and re-opened and used later on.
+Configuration instances can be saved like files into folders, and re-opened and used later on. Default and other named/as-shipped configurations can provide good starting points.
 
 The UI can be improved for extensibility:
 * the navigation hierarchy is derived from the schema. This may be sparse for many configurations. The ability to specify display tiles that span collection layers and define what locations go on which page can give more control over the UI layout.
