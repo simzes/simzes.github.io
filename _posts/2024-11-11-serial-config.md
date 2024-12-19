@@ -18,20 +18,22 @@ Serial-config is a software tool that supports field-configuration of devices by
 
 Serial-config is used by a prototyper during electronics development. Given a schema that describes a configuration, it generates two software resources to support field-configuration:
 
-**The first is a user interface** that allows a user to explore and edit a device's settings when the device and interface are tethered together. This currently runs on a desktop, but can be implemented in mobile environments in the future. The user interface program is written by hand, and dynamically interprets a schema to a visual interface that can edit that schema. One section, a navigational tree, supports selecting reference types in the schema; when selected, another section, an edit panel, supports reading and writing the configuration values. The interface has additional functions to scan for available ports and select the device; read the config instance; navigate and edit it; display feedback to the user about current status and edit validation; and write an updated config back to the device.
+**The first is a user interface** that allows a user to explore and edit a device's settings when the device and interface are tethered together. This currently runs on a desktop, but can be implemented in mobile and other environments in the future. (These are described in detail in the future work section.) The user interface program is written by hand, and dynamically interprets a schema into a visual interface that can edit an instance of that schema. One section, a navigational tree, supports selecting reference types in the schema instance; when selected, another section, an edit panel, supports reading and writing the primitive configuration values in that type. The interface has additional functions to scan for available serial ports and select the device (updates are currently implemented over USB); read the config instance; navigate and edit it; display feedback to the user about current status and edit validation; and write an updated config back to the device.
 
-**The second resource is an embedded library** that lives within a client program on a device. It presents a typed interface to the client program; it represents and manages the configuration instance; it reads, versions, and updates the configuration data from non-volatile storage, in response to both user and device edits; it manages over-the-wire updates to the configuration, and presents a drop-in routine to the host program to do so. Some of the library is compiled from the schema, but much is written by hand around an internal interface.
+**The second resource is an embedded library** that lives within a client program on a device. It presents a typed interface to the client program; it represents and manages the configuration instance; it reads, versions, and updates the configuration data from non-volatile storage, in response to user or device edits; it manages over-the-wire updates to the configuration, and presents a drop-in routine to the host program to do so. Some of the library is compiled from the schema, but much is written by hand around an internal interface.
 
 ---
-When tethered, these two parts connect and work together. Pairing them gives the user the best of two worlds: the user can edit the configuration in a more capable and resource-rich environment. A wire protocol transports commands for reads, writes, transactional commits, protocol synchronization, and error recovery. The library on the embedded device supports editing the configuration while using minimal resources.
+When tethered, these two parts connect and work together. Pairing them gives the user the best of two worlds: the user can edit the configuration from a more capable and resource-rich environment. A wire protocol transports commands for reads, writes, transactional commits, protocol synchronization, and error recovery. The library on the embedded device supports configuration while using minimal resources.
 
-Neither resource is competitive with hand-written software. For the user, the interface is user-friendly, and follows familiar and established interface patterns for editing settings; this is a significant improvement compared to editing fields in embedded source code. For the prototyper, serial-config is efficient and conserves weeks of development resources: the features that serial-config supports are intensive, in the time, money, and expertise needed to build them; important, in the rich functionality they enable for electronic devices; and mundane, in being relatively uninteresting to work on and think about.
+Neither resource is competitive with hand-written software. For the user, the interface is user-friendly, and follows familiar and established interface patterns for editing settings. (This is a significant improvement over editing fields in embedded source code, or having no configurability at all.) For the prototyper, serial-config is efficient and conserves weeks of development resources: the features that serial-config supports are intensive, in the time, money, and expertise needed to build them; important, in the rich functionality they enable for electronic devices; and mundane, in being relatively uninteresting to work on and think about.
 
-This initial version implements one complete strand across a common environment: the arduino microcontroller family, an electron-based desktop interface, updates through serial over USB, and storage in a microcontroller's non-volatile RAM. In future versions, many more options can be implemented for microcontroller environments, transfer protocols, and interfaces.
+This initial version implements one complete strand across a common environment: the arduino microcontroller family, an electron-based desktop interface, updates through serial over USB, and storage in a microcontroller's non-volatile RAM. In future versions, many modules can be implemented for microcontroller environments, transfer protocols, and interfaces.
+
+A tension throughout the project is that microcontrollers have limited instruction and memory space; these resources are often too constrained for many of the strategies used in other software environments to achieve modularity, flexibility, and dynamism. This project uses higher-level descriptions created in fully-resourced environments to compile compact, project-specific instances.
 
 ## Using Serial-Config
 ### Specifying a Schema
-The process of using serial-config begins with specifing a schema that describes the configuration. This is done in a python, using a collection of lightweight schema classes. This is what the schema looks like for our humidity sensor (a wireless network login, and an interval setting for readings):
+The process of using serial-config begins with specifying a schema that describes the configuration. This is done in a python, using a collection of lightweight schema classes. This is what the schema might look like for our humidity sensor (a wireless network login, and an interval setting for readings):
 
 ```
 import serial_config as sc
@@ -91,7 +93,7 @@ struct humidity_sensor {
 };
 ```
 
-This is available to the client program, along with a series of routines for retrieving an instance, committing updates, and checking for updates. Implementations of these are described below.
+This is available to the client program, along with a series of routines for retrieving an instance, committing edits, and checking for protocol updates. Implementations of these are described below.
 
 # Serial-Config Implementation
 ## Schema
@@ -120,7 +122,7 @@ The native data types are a straightforward translation of the python schema. St
 
 One instance of the configuration is allocated statically in memory. It is defined in bottom-up fashion during init: static initializers set up default schema values, control fields, and hierarchical references. References and control fields (a list's capacity) are important, and separate from updatable settings: these are are typed and initialized as `const` members, minimizing catastrophic misinterpretations by the client library.
 
-This is what an instance and its initialization look like in the library file for the humidity sensor:
+This is what an instance and its initialization look like in the library implementation file for the humidity sensor:
 ```
 /* INSTANCE */
 struct string id_0 = {255, 255, {0, 0, ..., 0}};
@@ -139,7 +141,10 @@ Variable names are defined in a bottom-up fashion; only the schema's root instan
 The instance is compiled to take up the maximum space possible for any variant of a schema definition. Lists statically allocate their entire capacity, and adjust their length field to account for dynamic changes. This avoids dynamic allocation and creates predictable memory characteristics for the client library.
 
 ### Compiled Definitions
-Much of the hand-written code needs to reason about the schema, despite not knowing what will be there. Explicit type and member labels provide this reasoning, along with a few other structures and macros. Every distinct type in the schema is assigned an enumerated type label. Type labels are declared in contiguous sections, so categories for primitives, lists, and structs can be distinguished with internal, book-ending tags (`IDENT__END_OF_PRIMITIVES`). A matched array of byte sizes translates type labels into their `sizeof` value.
+Much of the hand-written code needs to reason about the schema, despite not knowing what will be there. Explicit type and member labels provide this reasoning, along with a few other structures and macros.
+
+#### Type Labels
+Every distinct type in the schema is assigned an enumerated type label. Type labels are declared in contiguous sections, so categories for primitives, lists, and structs can be distinguished with internal, book-ending tags (`IDENT__END_OF_PRIMITIVES`). A matched array of byte sizes translates type labels into their `sizeof` value.
 
 The type labels block for all the types in the humidity sensor's schema looks like this:
 ```
@@ -157,6 +162,7 @@ enum ident_type {
 };
 ```
 
+#### Type Sizes
 The matched array of type sizes looks like this:
 ```
 const int ident_sizes[] = {
@@ -170,6 +176,7 @@ const int ident_sizes[] = {
 };
 ```
 
+#### Collection Members
 Members of collection types are assigned enumerated values, supporting the accessor scheme (explained below). For the root struct, this looks like this:
 ```
 // Member accessor for struct humidity_sensor id_4
@@ -179,8 +186,7 @@ enum ACCESSOR_STRUCT_humidity_sensor {
 };
 ```
 
-Altogether, these definitions support explicit inspection of the schema types, their member values, and their sizes.
-
+#### Defined Artifacts
 A few other details from instance generation are compiled into macros for use in the hand-written section: the root structure's field name, internal identifier, and type signature are used to type the library and start structure traversals. The structure's maximum tree height is used for stack-allocation during a depth-first traversal.
 ```
 #define ROOT_STRUCT_REF &id_4
@@ -189,6 +195,8 @@ A few other details from instance generation are compiled into macros for use in
 #define ROOT_STRUCT_TYPE_PTR ROOT_STRUCT_TYPE *
 #define MAX_DEPTH 3
 ```
+
+Altogether, these definitions support explicit inspection of the schema types, their member values, and their sizes.
 
 ### Accessors
 The accessor is the most important part of serial-config. It presents a uniform address space between the user interface and a tethered device, allowing for low-overhead reads and writes across a schema instance. It supports universal schema handling: much of the library code can vary little between schemas, and with minimal additional code size and memory usage as schemas grow.
@@ -201,10 +209,10 @@ In our humidity sensor:
 * [0, 1, 1] accesses the current length of the wireless ssid string, and
 * [0, 2, 3] accesses the first character of the wireless password
 
-The user interface can derive accessors from the schema for reading and writing field values, and sends the accessor with each protocol read and write command. The device can resolve accessors quickly, without look-up tables or recomputing as the schema instance changes; in the protocol design, accessor resolution is not synchronous and can take as much processing time as needed.
+The user interface can derive accessors from the schema for reading and writing field values, and sends the accessor with each protocol read and write command. The device can resolve accessors quickly, without look-up tables or recomputing as the schema instance changes; in the protocol design, accessor resolution is not synchronous and can take as much processing time as plausibly needed.
 
-### The Accessor Resolver
-The accessor resolver translates queries from schema-agnostic protocol and storage code into answers about the schema structure. Given a structure pointer, its type, and a member index, the accessor returns the member's pointer, type, and size--or an error.
+### Accessor Resolver
+The accessor resolver translates queries from schema-agnostic code into answers about the schema structure. Given a structure pointer, its type, and a member index, the accessor returns the member's pointer, type, and size--or an error.
 
 This is the accessor block for the humidity sensor's root struct:
 ```
@@ -229,7 +237,7 @@ void accessor(void *treeref, uint8_t ident, uint8_t member,
         break;
 ...
 ```
-Given a pointer, its type tag, and the query member index (`treeref`, `ident`, and `member`), the accessor function jumps first to a type tag handler block, then a member handler block. Each handler retrieves details about the member offset and type, and writes them back (`value`, `value_type`). Default handlers catch out-of-bounds members; the list handler checks the member against the array capacity.
+Given a pointer, its type tag, and the query member index (`treeref`, `ident`, and `member`), the accessor function jumps first to a type tag handler block (`case IDENT_STRUCT_humidity_sensor:`), then a member handler block (`case ACCESSOR_STRUCT_humidity_sensor_sensor_settings:`, for example). Each handler retrieves details about the member offset and type, and writes them back later in the function (`**value`, `*value_type`). Default handlers catch out-of-bounds members; the list handler checks the member against the array capacity.
 
 ### Accessor-Derived Functions
 The accessor resolver, along with the explicit type definitions, supports several important functions. The resolver forms the interface between code compiled from the schema and the hand-written library; it allows the hand-written part of the library to address, read and write, traverse, and store the configuration--while remaining agnostic to the details of a specific schema.
@@ -286,10 +294,12 @@ The iteration macro `accessor_foreach` enters the loop for every field in the co
 
 **Versioning:** several instances of the configuration can exist in different storage slots. (The number of slots is up to the client and storage size; it is also up to the client application to use this feature. A straightforward use of slots is to always store a new configuration in the next slot, and revert to the previous or saved default if something does not work.) One headache of cross-compilation and diverse environments (8 bit, 16 bit, and 32 bit microcontrollers are encouraged) is that this slot size is hard to compute statically. Instead, this is done at setup time, using the scanning iterator walk the configuration and calculate the slot size.
 
+By design, the accessor is implemented to minimize the amount of variable memory used and move as much information about the schema structure into instruction memory; microcontrollers tend to have more instruction space available. It also reuses the accessor function across multiple uses; a schema-specific compilation of the protocol and storage code would likely duplicate this information, taking up more space.
+
 ## Protocol
 The serial protocol is designed to be compact, memory-safe, resilient against packet alignment and mis-programming, and easy to program and verify. The host initiates all interactions, and implements the complex aspects of the read and update state machines.
 
-The host and information parsed from the protocol are not trusted to locate fields and write into them; all accessor paths are checked by the library, and all writes are sized and checked against a field's data type size boundaries.
+The host and data parsed from the protocol are not trusted by the device library to locate fields and write into them; all accessor paths are checked by the library, and all writes are sized and checked against a field's data type size boundaries.
 
 ### The packet frame
 The packet frame is simple, and easy to implement in little code. This is especially true on the embedded side.
@@ -396,6 +406,15 @@ Unions: C-unions support a structure that can be one of many types, and sets asi
 
 Implementing this within the static allocation scheme will be tricky for collection/reference types, and needs design work. Because the memory footprint must remain static across all schema variants, the set of nested collections must take up maximum memory possible with any union selection. One strategy is to create a separate instance for each nested collection. Another strategy is to express each nested level of sub-collections as a union, preserving some memory space. Both strategies need to run a set-up function whenever variant is selected, that stitches the memory space together--this is done at init for all other types. Given this new set-up requirement, it may be easier to move the entire instance into a memory blob and the init into a library function.
 
+### More Domains
+This project is a related idea to a previous project, PYES, which is a similar electronics development kit that focuses on the domain of flashing a selected embedded binary onto a tethered device; it creates a desktop interface with icons and descriptions of programs to explore and load.
+
+Configuration and binary flashing are excellent initial patterns. Others are:
+* data display and storage: many electronic devices exist to capture data. A service for transmitting, displaying, storing, and exporting this data would complement a wide range of devices. (The Arduino IDE has a data graphing service that automatically converts logged data to graphs.)
+* commands: the ability to execute a specific function on a device, controlled by a button or input form in the user interface, would be a huge advance. This is commonly used for controlling machines, and testing out settings (multi-color LED settings, etc.).
+* logging and tracing: embedded programs can be difficult to debug, because there are not enough resources to isolate the program executing and inspect its status. Debuggin equipment is available, but expensive. A low-overhead logging and tracing framework, that transports debug information to a host, could help generate reports about issues.
+* status and events: many embedded programs are implemented as state machines
+
 ### UI File-Saving and Extensibility
 The user interface is capable, but minimally so. Some development work can add useful features.
 
@@ -430,9 +449,6 @@ USB is an excellent first choice for connecting to devices. Others are bluetooth
 For interfaces, mobile is an excellent next step; an on-board touchscreen may be possible.
 
 The compiler and internal interfaces will need some architectural work to support multiple environments, and expressing their selection. Some details of the schema format and the protocol may not be portable. For example, bluetooth assigns one address to each field.
-
-### Integration with PYES
-This project is a related idea to PYES, which creates a similar desktop development kit but with a focus on programming devices with binaries. All that PYES needs to integrate serial-config is an association of binaries and configurations, and a way to ask a device which binary is currently loaded.
 
 ## Code Resources and Summary
 The code for serial-config is located at: [https://github.com/simonsbench/serial-config](https://github.com/simonsbench/serial-config)
