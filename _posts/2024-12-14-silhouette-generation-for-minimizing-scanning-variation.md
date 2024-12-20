@@ -10,7 +10,7 @@ caption: Search algorithms for synthesizing a light-adjusting filter shape
 
 *[Previous work first explained projection issues](https://simonsbench.net/flatbed-exposure-sketch) and sketched out the idea, and a [later project](https://simonsbench.net/light-shapes-and-lens-spacings) demonstrated that exposure variation could be minimized sufficiently for many processes through measurement and simulation of different lenses.*
 
-A follow-on project for prototyping a scanning photo-exposure unit is creating silhouettes for minimal exposure variation. A silhouette filter is a flat shape placed in profile over an LED and its lens, to selectively trim specific areas of the light shape. (For example, the bat signal, used to summon the batman, is made with a bat-shaped silhouette placed over a search light.)
+A follow-on project for prototyping a scanning photo-exposure unit is creating silhouettes for minimizing variation across the cumulative exposure of a scanned strip. A silhouette filter is a flat shape placed in profile over each LED and its lens, to selectively trim specific areas of the light shape. (For example, the bat signal, used to summon the batman, is made with a bat-shaped silhouette placed over a search light.)
 
 ![](public/images/filter-search/filter_cover.svg) *A silhouette filtering out some light from the edges, while letting other light in through a void. Light rays are included in drawing.*
 
@@ -38,7 +38,7 @@ In a search, any decision to include an area in a filtered or masked-out area ha
 
 A cell that is blocked out by the filter reduces the exposure level of its column as the strip scans. Because the light spots overlap across the strip, an inclusion of a cell in the filter changes the characteristics of two other groups of columns.
 
-First, whenever a cell in column *i* is filtered, several others columns are in a balance group for *i*. Several columns contribute light to this spot in a scan, and these have a lower filtering budget in the search; in the cumulative exposure, the error of this column is reduced by the cell being filtered. Given a spacing period *p*, these balance columns are defined by the cyclic group *Ci*. (*Ci* means, in this context, the set of all values *i + x * p*, where some *x* produces a point that fits within the width window of one light spot.)
+First, whenever a cell in column *i* is included in a filter, others columns form a balance group for *i*. Several other columns contribute light to this spot in a scan, and these now have a lower error and filtering budget in the search; in the cumulative exposure, the error of this column is reduced by the intensity of the cell being filtered. Given a spacing period *p*, these balance columns are defined by the cyclic group *Ci*. (*Ci* means, in this context, the set of all values *i + x * p*, where some *x* produces a point that fits within the width window of one light spot.)
 
 Second, the columns in a symmetric group with the filtered column *i* are also impacted. The same filter design is (ideally there's only one for the light spots that have converged overlap) placed over every light, so a blocked cell will show up in the same place on each one.
 
@@ -79,8 +79,10 @@ This heuristic produced a filter that successfully trims the cumulative exposure
 
 One additional detail is that the search worked better when the trim value was lowered past the minimum exposure level in the unfiltered strip, to 95%. After examination of the cumulative graph overlaid with the individual spots, this turned out to be because these minimum points prevented the mask from reaching deep enough into some areas, where more significant light levels are; they were outside the achievable slope rate of the filter.
 
-This is what a filter looks like, along with the before-and-after simulations of the cumulative exposure. In practice, the edges will be smoothed and expanded; the sharp points represent a 1mm-wide cell area.
+This is what a filter looks like, along with the before-and-after simulations of the cumulative exposure.
 
 ![](public/images/filter-search/the_winning_mask.png) *The winning mask. Note that the slopes at the edges are included for scale, and are outside of the light spot area.*
 
 ![](public/images/filter-search/cumulative_exposure.png) *Individual light spots, their cumulative sum, and the filtered sum.*
+
+In practice, the edges will be smoothed and expanded; the sharp points represent a 1mm-wide cell area. This mask provides a good scaffolding for finding curves that cross partial cells and compensating for the sloped shapes of the light spots.

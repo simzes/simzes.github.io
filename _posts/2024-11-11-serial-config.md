@@ -382,7 +382,7 @@ An experimental (and currently incomplete) feature supports ambiguously sized ty
 One future route to resolving this is to write a configuration schema whose only purpose is to gather useful architectural information, in byte sizes of various types and endian order. The results of reading this configuration schema form an architecture-specific size table, which can be stored alongside a schema.
 
 ## The End
-This has been serial-config. Schemas turn out to be very powerful. From one lightweight library of 3 python classes, came:
+This has been serial-config. Schemas turn out to be very powerful. From one lightweight library of 3 python classes, along with some embedded support code and an interface interpreter, came:
 * a user interface that can edit arbitrary schema instances
 * a protocol that can move schema data to/from a device
 * a typed interface for building a client program
@@ -393,7 +393,7 @@ This initial version of serial config was an exploration of whether a toolkit li
 
 All of these dreams came true.
 
-But! There is more to do to add functionality to this resource.
+But! There is more to do to add functionality and grow this project.
 
 ### More Data Types
 Lists, structs, and numeric primitives are an excellent start to the schema's features, and cover many use cases. There are several more that would complete it.
