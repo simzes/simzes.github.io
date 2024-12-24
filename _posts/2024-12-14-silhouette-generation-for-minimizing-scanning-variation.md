@@ -14,7 +14,7 @@ A follow-on project for prototyping a scanning photo-exposure unit is creating s
 
 <br/><br/>
 
-![](public/images/filter-search/filter_cover.svg) *A silhouette filtering out some light from the edges, while letting other light in through a void. Light rays are included in drawing.*
+![](public/images/filter-search/filter_cover.svg) *A silhouette filtering out some light created by an LED and a collimating lens, while letting other light in through a void. Light rays are included in drawing.*
 
 An ideal silhouette shape lowers the cumulative exposure variation across the strip, making the scanning technique work for more variation-sensitive processes. The 3-5% variation achieved through careful choice of spacing alone is excellent for many processes using an emulsion layer; these have variation tolerances upwards of 20%. But this level of variation does not work for more sensitive processes, like platinum print photography and cyanotypes; the artifact of the lights combining, in the form of the characteristic big-hump, little-hump pattern, will image in the print. These processes need less than 0.5% to 1% variation.
 
