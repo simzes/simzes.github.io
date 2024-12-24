@@ -20,16 +20,26 @@ This sub-project explores using a low-cost UV sensor to measure the light shape 
 This measurement set-up produced high-quality maps of light shapes, and simulations suggest most lenses can work with the right spacing. (Each lens has its own characteristics around exposure quality, cost, longevity, and weight; options gives exposure unit builders flexibility in different situations.) Some parts of this work are useful for other projects, in building exposure units (with sliding or fixed lights), designing low-cost light measurement equipment, and interpreting light sensor measurements.
 
 ## Background
-In purchasing or building ultraviolet photo-exposure units for screen printing, printers have traditionally picked between these two designs.
+In purchasing or building ultraviolet photo-exposure units for screen printing, printers have traditionally picked between two designs.
 
 **With a projector-style exposure,** one focused light source is positioned some distance from the photo-stencil and screen; while these cast crisp, excellent shadows, they take up so much space! This is often whole rooms for the largest of screens. The lamps are not easy to manage, as they have long warm-up and cool-down times. And the space around the screen is not ideal for humans while the light is on — UV light can cause eye damage, and a powerful, focused one is especially dangerous. In many settings (educational or community print studios), this danger is hard to safely contain, and there aren’t any affordable resources for room-sized lockouts.
 
-![](public/images/light-shapes-and-lens-spacings/drawing_1.svg)
+![](public/images/light-shapes-and-lens-spacings/drawing_1.svg) *A typical projector-style setup: a light shines on a screen from some distance away.*
+
+<br/><br/>
+
+![](public/images/light-shapes-and-lens-spacings/projector_lines.svg) *When a single light projects a photo-stencil, it preserves their size and creates only regions that are either full-light or full-black.*
 
 **With an array-style exposure,** many unfocused light sources are placed close to the stencil. While the light is safely contained in a shallow box, this compaction creates issues with exposure quality. Each light source casts its own shadow across the photo-stencil, creating a stepped gradient between full light and full dark; when enough light to expose the emulsion cuts behind the stencil, details shrink or disappear entirely.
 
-![](public/images/light-shapes-and-lens-spacings/drawing_2.svg)
+![](public/images/light-shapes-and-lens-spacings/drawing_2.svg) *A typical array-style setup, with many lights close to the screen.*
+
 <br/><br/>
+<br/><br/>
+
+![](public/images/light-shapes-and-lens-spacings/multi_lines.svg) *When many lights project a photo-stencil, it nibbles away at the stencil edges and creates several regions: one region is full-light, one region that is full-black, and several regions that sweep across a gradiant range in-between.*
+
+<br/>
 
 [As previously explored](/flatbed-exposure-sketch), a scanning technique that sweeps lights across the screen can collimate light in a compact space, pairing the excellent shadows of a projector-style unit with the compact size and safety of an array-style unit.
 

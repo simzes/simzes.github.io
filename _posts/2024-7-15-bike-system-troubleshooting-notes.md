@@ -2,7 +2,7 @@
 layout: post
 author: simon
 
-title: Bike System Troubleshooting Notes
+title: Simon's Bike Repair Troubleshooting Notes
 caption: Common bike issues, with causes, things to check for, explanations, and fixes.
 ---
 # Synopsis
@@ -553,6 +553,8 @@ Check that the derailleur is compatible with the bike. Some important aspects:
 - the cage needs to be wide enough to allow all (valid) front-rear combinations without chain rub; newer shifters have trim positions, while riders do this manually with friction shifters
 - the shifter’s shift or pull ratio needs to match the derailleur’s. Check that the derailleur’s steps match the chainring spacing. Develop an eye for a mountain vs. a road derailleur arm: on a mountain derailleur, the pinch bolt and derailleur pivot are about evenly spaced from the hinge; on a road derailleur, the pinch bolt is closer to the hinge, by about half the pivot’s distance.
 - the mount needs to fit the downtube and grip tightly; adapter shims are available
+
+
 # Rear Drive
 ## My rear shifting isn’t consistent
 
