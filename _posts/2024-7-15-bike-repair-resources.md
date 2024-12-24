@@ -2,9 +2,11 @@
 layout: post
 author: simon
 
-title: Resources for Common Bike Repairs
+title: Simon's Resources for Common Bike Repairs
 caption: Links to excellent resources for completing a variety of repairs and upgrades, organized by bike system.
 ---
+*This compilation of repair resources has been co-published with the Somerville Bike Kitchen, of Somerville, Massachusetts. [Their version of this resource](https://somervillebikekitchen.org/resources-for-common-repairs-and-upgrades/) has moderately better formatting, and will be updated regularly; this one will not be.*
+
 # Index of Resources
 [Wheels](#wheels)
 - [Tire and Tube Repairs](#tire-and-tube-repairs)

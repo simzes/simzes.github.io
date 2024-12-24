@@ -7,13 +7,13 @@ caption: Finding ideal lens spacings for a scanning photo-exposure design for sc
 ---
 *This is [part of a series](/flatbed-exposure-sketch) exploring the design of a novel scanning photo-exposure technique for screen printing and other light-sensitive media (cyanotypes, platinum and palladium prints, photo-chemical etching, etc). This exposure technique scans a light strip across the screen and stencil, using focusing lenses to achieve the excellent exposure characteristics of a room-sized projection lamp in the compact space of a typical light table.*
 
-*This post examines spacing patterns of lights along the strip, and how changing the distance between lights impacts the cumulative exposure shape and variation in light levels.*
+*This post examines spacing patterns of lights and their lenses along the strip, and how changing the distance between lights impacts the cumulative exposure shape and variation in light levels.*
 
 ---
 
-The next step in prototyping a scanning photo-exposure unit is experimenting with different lenses and finding the right spacing for each one. Different lens spacings along a strip change how individual light spots add and accumulate into an exposure, as the strip scans across the screen. Ideally, the exposure has minimal variation along the strip.
+The next step in prototyping a scanning photo-exposure unit is experimenting with different lenses and finding the right spacing for each one. Different lens spacings along a strip change how individual light spots add and accumulate into an exposure, as the strip scans across the screen. The ideal exposure has minimal variation along the strip.
 
-This sub-project explores using a low-cost UV sensor to measure the light shape created by different lens types. The sensor scans across a light spot over two axes, producing thousands of measurements that form a three dimensional light shape. This data is then used to simulate different spacings to find the spacing that minimizes light variation across the scanning strip.
+This sub-project explores using a low-cost UV sensor to measure the light shape created by different lens types. The sensor scans across a light spot over two axes, producing thousands of measurements that form a three dimensional light shape. This data is then used to simulate different spacings to find ones that minimize light variation across the scanning strip.
 
 [Previous sketches and graphing](/flatbed-exposure-sketch) suggested that combined circles could overlap to create a light strip even enough for photo-exposure. This guesswork assumed light spots with even distributions of light. But LEDs don’t produce light shapes with even distributions, and each lens compounds this light shape differently. The question of whether focused lights could form an even strip remained murky, along with other questions of which lenses are suitable and system cost.
 
@@ -28,7 +28,7 @@ In purchasing or building ultraviolet photo-exposure units for screen printing, 
 
 <br/><br/>
 
-![](public/images/light-shapes-and-lens-spacings/projector_lines.svg) *When a single light projects a photo-stencil, it preserves their size and creates only regions that are either full-light or full-black.*
+![](public/images/light-shapes-and-lens-spacings/projector_lines.svg) *When a single light projects a photo-stencil, it preserves the size of its details and creates only regions that are either full-light or full-black.*
 
 <br/><br/>
 
@@ -39,7 +39,7 @@ In purchasing or building ultraviolet photo-exposure units for screen printing, 
 <br/><br/>
 <br/><br/>
 
-![](public/images/light-shapes-and-lens-spacings/multi_lines.svg) *When many lights project a photo-stencil, it nibbles away at the stencil edges and creates several regions: one region is full-light, one region that is full-black, and several regions that sweep across a gradiant range in-between.*
+![](public/images/light-shapes-and-lens-spacings/multi_lines.svg) *When many lights project a photo-stencil, it nibbles away at the stencil edges and creates several regions: one region is full-light, another region is full-black, and several regions sweep across a gradiant range in-between. The effective exposure angle is somewhere this region.*
 
 <br/>
 
@@ -51,12 +51,13 @@ In purchasing or building ultraviolet photo-exposure units for screen printing, 
 ## The Problem With Lens Spacing
 In building a scanning photo-exposure unit, the lens spacing is a crucial design parameter. The light spots need to align so the sloped edges of the intensity shape overlap to create even-ish light levels across the light strip. Too close, and these edges overlap and re-accentuate the already high spots of an adjacent light; too far apart, and the intensity valleys between two light spots gape open.
 
-![](public/images/light-shapes-and-lens-spacings/too_far_too_near.png) *In this graph, a series of simulated spacings are compared for a measured light shape. The 28mm plot is too close, with a spike over the light centers; 34mm is too far, with a steep valley in between each light. 30mm is about right, with the ends of each adjacent light tapering in the right spots to create minimal variation.*
+![](public/images/light-shapes-and-lens-spacings/too_far_too_near.png) *In this graph, a series of simulated spacings are compared for a measured light shape. The orange 28mm plot is too close, with a spike over the light centers; the purple 34mm plot is too far, with a steep valley in between each light. The green 30mm plot is about right, with the ends of each adjacent light tapering in the right spots to create minimal variation.*
 
-Having even light levels across the strip is important. A successful design has a wide exposure separation between baked and unbaked emulsion. When a design has a wide range of light levels, this separation becomes too narrow. The exposure is timed to the lowest intensity level across the screen; in the highest-intensity areas, the emulsion behind the mask can bake too much. Excess light is thrown away, wasting resources. The exposure timing becomes overly sensitive. These high spots degrade the screen faster; overcooked emulsion is hard to remove, and can lurk in the screen. An uneven lighting design can also transfer the stencil unevenly; high and low-intensity areas are unlikely to have have the same angular distribution of light, resulting in different projection characteristics.
+Having even light levels across the strip is important. A successful design has a wide exposure separation between baked and unbaked emulsion. When a design has a wide range of light levels, this separation becomes too narrow. An exposure is timed to the lowest intensity level across the screen; in the highest-intensity areas, the emulsion behind the mask can bake too much. Excess light is thrown away, wasting resources. The exposure timing becomes overly sensitive. These high spots degrade the screen faster, as overcooked emulsion is hard to remove, and can lurk in the screen. An uneven lighting design can also transfer the stencil unevenly; high and low-intensity areas are unlikely to have the same angular distribution of light, resulting in different projection characteristics.
 <br/><br/>
 
 ![](public/images/light-shapes-and-lens-spacings/problem_exposure.svg) *This exposure graph shows how four different areas of a screen might accumulate exposure with an unbalanced light design: unmasked areas in the high- and low-intensity areas, and masked areas in the same. When the gap between high- and low-intensities is too large, the masked area under high-intensity light can set up before the exposure time is complete. (Exposure is on a continuum; semi-baked areas can be washed out sometimes, but with more work, less-crisp results, and water pressure that risks delaminating unmasked areas.) Overcooked emulsion can damage the screen shortly after the minimum exposure is reached. (The distance between masked and un-masked has been made smaller for straightforward visualization; the threshold for detail loss is much lower as well.)*
+<br/><br/>
 <br/><br/>
 
 ![](public/images/light-shapes-and-lens-spacings/good_exposure.svg) *When the high- and low-intensity areas are closer together in a tightly balanced light design, the minimum exposure can be reached before the high-intensity masked area starts to set up and lose detail. The high-intensity, unmasked areas expose without damaging the screen.*
