@@ -8,9 +8,11 @@ caption: Search algorithms for synthesizing a light-adjusting filter shape
 
 *This is part of a series exploring the design of a novel photo-exposure technique for screen printing and other light-sensitive media (cyanotypes, platinum and palladium prints, photo-chemical etching, etc). This exposure technique scans a light strip across the screen and stencil, using focusing lenses to achieve the excellent exposure characteristics of a room-sized projection lamp in the compact space of a typical light table.*
 
-*[Previous work first explained projection issues](https://simonsbench.net/flatbed-exposure-sketch) and sketched out the idea, and a [later project](https://simonsbench.net/light-shapes-and-lens-spacings) demonstrated that exposure variation could be minimized sufficiently for many processes through measurement and simulation of different lenses.*
+*[Previous work first explained projection issues](https://simonsbench.net/flatbed-exposure-sketch) and sketched out the idea, and a [later project](https://simonsbench.net/light-shapes-and-lens-spacings) demonstrated that exposure variation could be minimized sufficiently for many processes through measurement of lenses and simulation of different spacings.*
 
-A follow-on project for prototyping a scanning photo-exposure unit is creating silhouettes for minimizing variation across the cumulative exposure of a scanned strip. A silhouette filter is a flat shape placed in profile over each LED and its lens, to selectively trim specific areas of the light shape. (For example, the bat signal, used to summon the batman, is made with a bat-shaped silhouette placed over a search light.)
+A follow-on project for prototyping a scanning photo-exposure unit is creating silhouettes for minimizing variation across the cumulative exposure of a scanning strip. A silhouette filter is a flat shape placed in profile over each LED and its lens, to selectively trim specific areas of the light shape. (For example, the bat signal, used to summon the batman, is made with a bat-shaped silhouette placed over a search light.)
+
+<br/><br/>
 
 ![](public/images/filter-search/filter_cover.svg) *A silhouette filtering out some light from the edges, while letting other light in through a void. Light rays are included in drawing.*
 
@@ -70,6 +72,8 @@ A heuristic that did work is one that ensures the mask edge is relatively smooth
 The heuristic used in the search has two conditions:
 * the column must have some positive error to be considered in the search
 * the column's heuristic value is the slope delta
+
+<br/><br/>
 
 ![](public/images/filter-search/slope_deltas.svg) *Collections of positive-sloped, 0-sloped, and negative-sloped points, from a top-down search perspective.*
 

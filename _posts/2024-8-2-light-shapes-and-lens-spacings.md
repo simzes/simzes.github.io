@@ -30,6 +30,8 @@ In purchasing or building ultraviolet photo-exposure units for screen printing, 
 
 ![](public/images/light-shapes-and-lens-spacings/projector_lines.svg) *When a single light projects a photo-stencil, it preserves their size and creates only regions that are either full-light or full-black.*
 
+<br/><br/>
+
 **With an array-style exposure,** many unfocused light sources are placed close to the stencil. While the light is safely contained in a shallow box, this compaction creates issues with exposure quality. Each light source casts its own shadow across the photo-stencil, creating a stepped gradient between full light and full dark; when enough light to expose the emulsion cuts behind the stencil, details shrink or disappear entirely.
 
 ![](public/images/light-shapes-and-lens-spacings/drawing_2.svg) *A typical array-style setup, with many lights close to the screen.*
