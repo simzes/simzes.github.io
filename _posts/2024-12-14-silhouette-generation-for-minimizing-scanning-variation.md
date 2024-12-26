@@ -36,11 +36,11 @@ In addition to these two matrices, a "trim" value is specified as the desired ex
 Error is calculated on a per-column basis, and is the column's cumulative intensity above the trim value.
 
 ## Problem Structure and Difficulty of a Directly Computed Solution
-In a search, any decision to include an area in a filtered or masked-out area has computational consequences that cascade across other points on the filter. This makes a closed-form or direct solution difficult.
+In a search, any decision to include a cell within the filtered area has computational consequences that cascade across other lights on the strip and points on the filter. This makes a closed-form or direct solution difficult.
 
-A cell that is blocked out by the filter reduces the exposure level of its column as the strip scans. Because the light spots overlap across the strip, an inclusion of a cell in the filter changes the characteristics of two other groups of columns.
+A cell that is blocked out by the filter reduces the exposure level of its column as the strip scans. But because other light spots overlap across the strip and all spots use the same filter design (ideally), any change to one column changes the properties of two other groups of columns.
 
-First, whenever a cell in column *i* is included in a filter, others columns form a balance group for *i*. Several other columns contribute light to this spot in a scan, and these now have a lower error and filtering budget in the search; in the cumulative exposure, the error of this column is reduced by the intensity of the cell being filtered. Given a spacing period *p*, these balance columns are defined by the cyclic group *Ci*. (*Ci* means, in this context, the set of all values *i + x * p*, where some *x* produces a point that fits within the width window of one light spot.)
+First, whenever a cell in column *i* is included in a filter, another group of columns form a balance group for *i*. Other lights have columns that contribute to this column's exposure slice, and these now have a lower error and filtering budget in the search; in the cumulative exposure, the error of this column is reduced by the intensity of the cell being filtered. Given a spacing period *p*, these balance columns are defined by the cyclic group *Ci*. (*Ci* means, in this context, the set of all values *i + x * p*, where some *x* produces a point that fits within the width window of one light spot.)
 
 Second, the columns in a symmetric group with the filtered column *i* are also impacted. The same filter design is (ideally there's only one for the light spots that have converged overlap) placed over every light, so a blocked cell will show up in the same place on each one.
 

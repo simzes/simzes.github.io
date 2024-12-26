@@ -5,6 +5,12 @@ author: simon
 title: Simon's Bike Repair Troubleshooting Notes
 caption: Common bike issues, with causes, things to check for, explanations, and fixes.
 ---
+In many bike repair scenarios, a small group of issues show up again and again: brakes don't as well; shifting is broken; tires go flat. When these issues occur in complex systems, such as brakes, shifters, and drivetrains, there are multitudes of possible causes that are hard to troubleshoot and tease out.
+
+There are many resources on [how to complete specific repairs](/bike-repair-resources); there are other resources that convey an [encyclopedia's worth](https://www.sheldonbrown.com/) of [information about bicycles.](https://www.sutherlandsbicycle.com/products/repair-manual-7th-edition-book-cd) But there are few resources that discuss the troubleshooting process itself. (This is [one of the only ones](https://www.parktool.com/en-us/blog/repair-help/troubleshooting-a-noisy-drivetrain) I found.)
+
+The art of this troubleshooting process is what these notes are about: understanding how a system is supposed to work; how a cause changes the system's operation; how to check for a cause; and routes for fixing it.
+
 # Synopsis
 ## Wheel
 ### My tire went flat, or keeps going flat after patching or replacing! (For wheels with inner tubes.)

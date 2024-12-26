@@ -39,7 +39,7 @@ In purchasing or building ultraviolet photo-exposure units for screen printing, 
 <br/><br/>
 <br/><br/>
 
-![](public/images/light-shapes-and-lens-spacings/multi_lines.svg) *When many lights project a photo-stencil, it nibbles away at the stencil edges and creates several regions: one region is full-light, another region is full-black, and several regions sweep across a gradiant range in-between. The effective exposure angle is somewhere this region.*
+![](public/images/light-shapes-and-lens-spacings/multi_lines.svg) *When many lights project a photo-stencil, it nibbles away at the stencil edges and creates several regions: one region is full-light, another region is full-black, and several regions sweep across a gradiant range in-between. The effective exposure angle is somewhere in this region, and undercuts the stencil.*
 
 <br/>
 
