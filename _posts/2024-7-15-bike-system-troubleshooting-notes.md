@@ -3,13 +3,13 @@ layout: post
 author: simon
 
 title: Simon's Bike Repair Troubleshooting Notes
-caption: Common bike issues, with causes, things to check for, explanations, and fixes.
+caption: Ways to troubleshoot and understand common bike issues, with causes, things to check for, explanations, and fixes.
 ---
-In many bike repair scenarios, a small group of issues show up again and again: brakes don't as well; shifting is broken; tires go flat. When these issues occur in complex systems, such as brakes, shifters, and drivetrains, there are multitudes of possible causes that are hard to troubleshoot and tease out.
+In many bike repair scenarios, a small group of issues show up again and again. Brakes don't work as well. Shifting is funky or broken. Tires keep going flat. Etc. When these issues occur in complex systems, such as brakes, shifters, and drivetrains, there can be many possible causes to tease out. This troubleshooting process is hard, and can prevent beginning mechanics from understanding what repair is appropriate.
 
-There are many resources on [how to complete specific repairs](/bike-repair-resources); there are other resources that convey an [encyclopedia's worth](https://www.sheldonbrown.com/) of [information about bicycles.](https://www.sutherlandsbicycle.com/products/repair-manual-7th-edition-book-cd) But there are few resources that discuss the troubleshooting process itself. (This is [one of the only ones](https://www.parktool.com/en-us/blog/repair-help/troubleshooting-a-noisy-drivetrain) I found.)
+There are many resources on [how to complete specific repairs](/bike-repair-resources); there are some other resources that convey an [encyclopedia's worth](https://www.sheldonbrown.com/) of [information about bicycles.](https://www.sutherlandsbicycle.com/products/repair-manual-7th-edition-book-cd) But there are few resources that discuss the troubleshooting process itself. (This is [one of the only ones](https://www.parktool.com/en-us/blog/repair-help/troubleshooting-a-noisy-drivetrain) I found.)
 
-The art of this troubleshooting process is what these notes are about: understanding how a system is supposed to work; how a cause changes the system's operation; how to check for a cause; and routes for fixing it.
+These notes are all about the art of this troubleshooting process and teasing out causes: understanding how a mechanical system is supposed to work; how different causes change the system's operation; how to check for each one; and routes for fixing them.
 
 # Synopsis
 ## Wheel
@@ -695,7 +695,7 @@ If the shifting characteristics change suddenly during adjustment or while ridin
 Check the pinch bolt and derailleur threads for wear; a pinch bolt that is stripped can be endlessly tightened down, and seem to hold before giving way. Check the cable channel and washer for excess dirt; clean this off, and consider sanding it to roughen it. Develop a feel for how tight the pinch bolt should be, or use a torque wrench to measure it more precisely—4-6nm is typical.
 
 ### (less common) Rear derailleur, chain, gears, or shifter is mismatched and incompatible
-The derailleur, chain, cassette, and shifter must be compatible in a few important aspects.  Signs that these parts aren’t compatible include:
+The derailleur, chain, cassette, and shifter must be compatible in a few important aspects. Signs that these parts aren’t compatible include:
 
 - the derailleur is in the wrong position for the next gear (after being in the right position for a previous one)
 - the chain isn’t seating fully on the gear teeth, is getting stuck, or is rubbing against neighboring gears
@@ -714,4 +714,3 @@ The pivots on most derailleurs are pinned in place, and cannot be replaced. Over
 The guide and tension wheels inside the derailleur cage need to spin freely, run straight, and have little side-to-side play. Otherwise, the wheels can twist or tilt the chain, scrape against the derailleur cage, or slide inside the cage as the derailleur tries to shift. Lift the chain away from the guide and tension wheels, and check that the wheels spin easily and have minimal side-to-side play/twist. Lubricate any stiff wheels. Wheels and internal bushings with wear should be replaced.
 
 The derailleur cage can bend and deform, from an impact or from getting tangled up in the wheel, causing significant shifting and derailment issues. Check that the cage plates on either side are straight, that the tension and guide wheels are in a straight line, and that the cage is perpendicular to where it rotates around the derailleur.
-
