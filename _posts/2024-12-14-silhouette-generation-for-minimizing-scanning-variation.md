@@ -10,6 +10,7 @@ caption: Search algorithms for synthesizing a light-adjusting filter shape
 
 *[Previous work first explained projection issues](https://simonsbench.net/flatbed-exposure-sketch) and sketched out the idea, and a [later project](https://simonsbench.net/light-shapes-and-lens-spacings) demonstrated that exposure variation could be minimized sufficiently for many processes through measurement of lenses and simulation of different spacings.*
 
+---
 A follow-on project for prototyping a scanning photo-exposure unit is creating silhouettes for minimizing variation across the cumulative exposure of a scanning strip. A silhouette filter is a flat shape placed in profile over each LED and its lens, to selectively trim specific areas of the light shape. (For example, the bat signal, used to summon the batman, is made with a bat-shaped silhouette placed over a search light.)
 
 <br/><br/>
@@ -48,7 +49,7 @@ Second, the columns in a symmetric group with the filtered column *i* are also i
 
 The balance and symmetry groups cascade across the filter; starting from a column *i*, there is a balance group that contributes to the same spot and a symmetric group that mirrors this spot on the filter. But the balance group also has a symmetry group, and the symmetry group also has a balance group. And so on.
 
-The cyclic groups of both sets will converge, but it may not be computationally advantages to try and solve for these groups and calculate their error and filter budgets directly; if the spacing has a period of 1, then the set of columns impacted by any single change to the filter includes every column! The error evaluation algorithm uses a guess-and-check approach.
+The cyclic groups of both sets will converge, but it may not be computationally efficient to try and solve for these groups and calculate their error and filter budgets directly; if the spacing has a period of 1, then the set of columns impacted by any single change to the filter includes every column! The error evaluation algorithm uses a guess-and-check approach.
 
 ## An Initial Heuristic (That Didn't Work)
 An initial search used a greedy search, with a step heuristic that selected the column with the highest error and masked out cells in that column until the error was gone. The cumulative exposure graph looked wonderfully flat; computationally, the filter worked very well, with an error of 0.1%.
